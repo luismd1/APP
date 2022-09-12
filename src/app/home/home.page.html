@@ -1,0 +1,31 @@
+<app-cabecera></app-cabecera>
+
+<ion-content [fullscreen]="true">
+  <div id="container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Inicio de sesión</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Correo</ion-label>
+          <ion-input type="email" [(ngModel)]="usu"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input type="password" [(ngModel)]="pass"></ion-input>
+        </ion-item>
+        
+        <ion-text color="primary">
+          <br>
+          <h6 (click)="registro()">Registrarse</h6>
+          <h6 (click)="claveOlvidada()">¿Olvidaste tu clave?</h6>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button (click)="iniciar()" expand="block">Iniciar sesión</ion-button>
+  </div>
+</ion-content>

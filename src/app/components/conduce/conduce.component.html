@@ -1,0 +1,58 @@
+<ion-card>
+  <!-- CABECERA DE AUTO -->
+  <ion-card-header *ngIf="auto == false">
+    <ion-card-title>Inscribir auto</ion-card-title>
+    <ion-card-subtitle>Para inscribir un viaje primero debe inscribir un auto</ion-card-subtitle>
+  </ion-card-header>
+  <!-- CABECERA DE VIAJE -->
+  <ion-card-header *ngIf="auto != false">
+    <ion-card-title>Inscribir viaje</ion-card-title>
+    <ion-card-subtitle>Para inscribir un viaje complete el fomulario con la siguiente informacion</ion-card-subtitle>
+  </ion-card-header>
+  <!-- FORMULARIO DE VIAJE -->
+  <ion-card-content *ngIf="auto != false">
+    <ion-item>
+      <ion-label position="stacked">Ingrese el destino</ion-label>
+      <ion-input [(ngModel)]="destino" type="text" placeholder="Ej: Av. las torre quilicura"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Fecha de salida</ion-label>
+      <ion-input [(ngModel)]="fecha" type="date"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Hora de salida</ion-label>
+      <ion-input [(ngModel)]="hora" type="time"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Capacidad</ion-label>
+      <ion-input [(ngModel)]="pasajeros" type="number"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Costo por persona</ion-label>
+      <ion-input [(ngModel)]="costo" type="number"></ion-input>
+    </ion-item>
+  </ion-card-content>
+  <!-- FORMULARIO DE AUTO -->
+  <ion-card-content *ngIf="auto == false">
+    <ion-item>
+      <ion-label position="stacked">Patente</ion-label>
+      <ion-input [(ngModel)]="patente" type="text" placeholder="Ej: ABCD12"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Marca</ion-label>
+      <ion-input type="text" [(ngModel)]="marca" placeholder="Ej: Ferrari"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Modelo</ion-label>
+      <ion-input type="text" [(ngModel)]="modelo" placeholder="Ej: FXX"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Capacidad del auto</ion-label>
+      <ion-input type="number" [(ngModel)]="capacidad" placeholder="Ej: 2"></ion-input>
+    </ion-item>
+  </ion-card-content>
+</ion-card>
+<!-- BOTON DEL AUTO -->
+<ion-button (click)="regAuto()" *ngIf="auto == false">Registrar auto</ion-button>
+<!-- BOTON DEL VIAJE -->
+<ion-button (click)="regViaje()" *ngIf="auto != false">Registrar viaje</ion-button>

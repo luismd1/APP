@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-img [src]="item.imagen"></ion-img>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title style="font-size: 22px;">Registrarse</ion-card-title>
+      <ion-card-subtitle>Registrate con tu correo institucional de DuocUC</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Correo</ion-label>
+        <ion-input type="email" [(ngModel)]="usu" placeholder="Ej: seb.cortes@duocuc.cl"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input type="password" [(ngModel)]="pass1" placeholder="Ej: Contrasena123."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Confirmar contraseña</ion-label>
+        <ion-input type="password" [(ngModel)]="pass2" placeholder="Ej: Contrasena123."></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-button (click)="registrarse()" expand="block">Crear cuenta</ion-button>
+</ion-content>

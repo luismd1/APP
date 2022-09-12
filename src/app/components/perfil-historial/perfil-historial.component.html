@@ -1,0 +1,40 @@
+<ion-header>
+  <div class="ion-text-center">
+    <h1>Historial viajes:</h1>
+  </div>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-list>
+    <ion-item *ngFor="let i of viajes">
+      <ion-grid>
+        <ion-row >
+          <ion-col size="12">
+              <p>{{ i.destino }}</p>
+          </ion-col>
+      </ion-row>
+  
+        <ion-row>
+          <ion-col>
+            <p>Estado: {{ i.estado }}</p>
+          </ion-col>
+          <ion-col>
+            <p>Fecha: {{ i.fecha }}</p>
+          </ion-col>
+          <ion-col >
+            <p>Hora: {{ i.hora }}</p>
+          </ion-col>
+          <ion-col size="3">
+            <p>Costo: {{ i.costo }}</p>
+          </ion-col>
+      </ion-row>
+      </ion-grid>
+  
+  
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+

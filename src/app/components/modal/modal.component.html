@@ -1,0 +1,30 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Cancelar</ion-button>
+        </ion-buttons>
+        <ion-title>{{ destino }}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">Confirmar</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+    <ion-list>
+        <ion-item>
+            <ion-label>Destino: {{ destino }}</ion-label>
+        </ion-item>
+        <ion-item>
+            <ion-label>Fecha: {{ fecha }}</ion-label>
+        </ion-item>
+        <ion-item>
+            <ion-label>Hora: {{ hora }}</ion-label>
+        </ion-item>
+        <ion-item>
+            <ion-label>Asientos disponibles: {{ pasajeros }}</ion-label>
+        </ion-item>
+        <ion-item>
+            <ion-label>Costo por persona: {{ costo }}</ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

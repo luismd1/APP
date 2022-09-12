@@ -1,0 +1,42 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col size="4"></ion-col>
+      <ion-col size="8"><h3>Perfil</h3></ion-col>
+    </ion-row>
+
+
+    <!-- boton menu  -->
+    <ion-buttons slot="start">
+      <ion-menu-button color="warning" autoHide="false"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+
+  <ion-toolbar color="warning">
+    <ion-img [src]="item.src"></ion-img>
+  </ion-toolbar>
+
+
+
+  <ion-toolbar>
+    <ion-segment value="perfil" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="perfil-datos">
+        <ion-icon name="person-circle-outline" color="warning"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button value="perfil-historial">
+        <ion-icon name="briefcase-outline" color="warning"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button value="perfil-config">
+        <ion-icon name="cog-outline" color="warning"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  
+
+</ion-header>
+<ion-content>
+<!-- Default Item -->
+  <ion-router-outlet></ion-router-outlet>
+</ion-content>
