@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { DbservicioService } from '../services/dbservicios.service';
 
 @Component({
   selector: 'app-home',
@@ -10,23 +11,21 @@ import { ToastController } from '@ionic/angular';
 export class HomePage {
   usu : string = "";
   pass : string = "";
-  correo : string = "seb.cortes@duocuc.cl";
-  contra : string = "hola123";
-  correo2 : string = null;
-  contra2 : string = null;
-
+  listaUsu : any = [
+    {
+      id : '',
+      correo : '',
+      contrasena : ''
+    }
+  ];
 
   item : any = {
     imagen : "assets/imgs/DowntownCabCoLogoGTAV.webp",
   }
-  constructor(private toastController : ToastController, private router : Router, private activedRoute : ActivatedRoute) {
-    this.activedRoute.queryParams.subscribe(params => {
-      if(this.router.getCurrentNavigation().extras.state){
-        this.contra = this.router.getCurrentNavigation().extras.state.pass;
-        this.correo2 = this.router.getCurrentNavigation().extras.state.usu;
-        this.contra2 = this.router.getCurrentNavigation().extras.state.pass;
-      }
-    })
+
+  login : boolean;
+  constructor(private toastController : ToastController, private router : Router, private conexionBD : DbservicioService) {
+
   }
 
   registro(){
@@ -42,17 +41,16 @@ export class HomePage {
     this.router.navigate(['/clave-olvidada'], navigationExtras);
   }
 
+
+  // FALTA TERMINAR ESTA WEA CTM
   iniciar(){
-    let navigationExtras : NavigationExtras = {
-      state : {
-        usuario : this.correo,
-        contra2 : this.contra2
-      }
-    }
-    if(this.correo == this.usu && this.contra == this.pass || this.correo2 == this.usu && this.contra2 == this.pass){
-      this.router.navigate(['/inicio'], navigationExtras)
+    this.conexionBD.login(this.usu, this.pass);
+    this.login = this.conexionBD.res2;
+    if(this.login){
+      this.mensaje('REDIRECCION');
+      this.router.navigate(['/inicio']);
     }else{
-      this.mensaje('El correo y/o la contraseña es incorrecta.')
+      this.mensaje('Usuario y/o contraseña incorrecta');
     }
   }
 
@@ -62,5 +60,17 @@ export class HomePage {
       duration: 2000
     });
     toast.present();
+  }
+
+  ngOnInit() {
+    //me subscribo al servicio
+    this.conexionBD.dbState().subscribe((res)=>{
+      if(res){
+        //subscribo a los cambios en las consultas de BD
+        this.conexionBD.fetchUsu().subscribe(item=>{
+          this.listaUsu = item;
+        })
+      }
+    })
   }
 }
