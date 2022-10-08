@@ -3,17 +3,20 @@
 </ion-header>
 <ion-content>
     <ion-list>
-        <ion-item *ngFor="let i of viajes">
-            <ion-row>
-                <ion-col size="9">
-                    <p>{{ i.destino }}</p>
-                </ion-col>
-                <ion-col size="3">
-                    <ion-button (click)="abrirModal(i.id)">
-                        <ion-icon name="ellipsis-horizontal-circle-outline"></ion-icon>
-                    </ion-button>
-                </ion-col>
-            </ion-row>
+        <ion-item *ngFor="let i of listaViajes">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="9">
+                        <p>{{ i.destino }}</p>
+                    </ion-col>
+                    <ion-col size="3">
+                        <ion-button (click)="abrirModal(i.id)">
+                            <ion-icon name="ellipsis-horizontal-circle-outline"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+
             <!-- MODAL -->
         </ion-item>
     </ion-list>

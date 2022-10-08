@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ModalController, ToastController } from '@ionic/angular';
+import { DbservicioService } from 'src/app/services/dbservicios.service';
 import { ModalComponent } from '../modal/modal.component';
 
 @Component({
@@ -9,6 +10,16 @@ import { ModalComponent } from '../modal/modal.component';
   styleUrls: ['./viajar.component.scss'],
 })
 export class ViajarComponent implements OnInit {
+  listaViajes: any = [
+    {
+      idViaje : '',
+      destino: '',
+      fecha: '',
+      hora: '',
+      pasajeros: '',
+      costo: ''
+    }
+  ]
 
   name : string = "";
   message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
@@ -48,7 +59,7 @@ export class ViajarComponent implements OnInit {
     },
   ]
 
-  constructor(private modalCtrl : ModalController, private router : Router, private toastController : ToastController, private activedRoute : ActivatedRoute) {
+  constructor(private modalCtrl : ModalController,private conexion : DbservicioService, private router : Router, private toastController : ToastController, private activedRoute : ActivatedRoute) {
     this.activedRoute.queryParams.subscribe(params => {
       if(this.router.getCurrentNavigation().extras.state){
         this.viajes.push({
@@ -62,6 +73,8 @@ export class ViajarComponent implements OnInit {
       }
     });
   }
+
+  
 
   async abrirModal(id){
     const modal = await this.modalCtrl.create({
@@ -94,6 +107,16 @@ export class ViajarComponent implements OnInit {
     toast.present();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    //me subscribo al servicio
+    this.conexion.dbState().subscribe((res)=>{
+      if(res){
+        //subscribo a los cambios en las consultas de BD
+        this.conexion.fetchViaje().subscribe(item=>{
+          this.listaViajes = item;
+        })
+      }
+    })
+  }
 
 }

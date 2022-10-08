@@ -5,7 +5,7 @@ export class Viaje {
     destino: string;
     fecha: Date;
     hora: Time;
-    capacidad: number;
+    pasajeros: number;
     costo: number;
 }
 
