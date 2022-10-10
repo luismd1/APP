@@ -42,8 +42,8 @@ export class DbservicioService {
   //observable para validar si la BD esta disponible o no
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  
-  res2 : boolean;
+  //observable para el login
+  usuarioActual = new BehaviorSubject([]);
 
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
     this.crearBD();
@@ -121,6 +121,10 @@ export class DbservicioService {
     return this.listaUsuarios.asObservable();
   }
 
+  fetchLogin() : Observable<Usuario[]> {
+    return this.usuarioActual.asObservable();
+  }
+
   // BUSCAR VIAJE 
   buscarViajes() {
     //realizamos la consulta a la BD
@@ -175,7 +179,6 @@ export class DbservicioService {
             correo : res.rows.item(i).correo,
             contrasena : res.rows.item(i).contrasena
           });
-
         }
       }
       this.listaViajes.next(items);
@@ -186,13 +189,18 @@ export class DbservicioService {
   // FUNCION QUE CONPRUEBA SI LA CLAVE Y EL USUARIO SON CORRECTOS
   login(usu, contra){
     let data = [usu, contra];
+    let items : Usuario[] = [];
     this.database.executeSql('SELECT * FROM usuario WHERE correo = ? AND contrasena = ?;',data).then(res => {
       if (res.rows.length > 0){
-        this.res2 = true;
-      }else{
-        this.presentAlert('xd','xd');
-        this.res2 = false;
+        for (var i = 0; i < res.rows.length;){
+          items.push({
+            idUsuario : res.rows.item(i).id_usuario,
+            correo : res.rows.item(i).correo,
+            contrasena : res.rows.item(i).contrasena
+          });
+        }
       }
+      this.usuarioActual.next(items);
     });
   }
 

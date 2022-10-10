@@ -23,7 +23,6 @@ export class HomePage {
     imagen : "assets/imgs/DowntownCabCoLogoGTAV.webp",
   }
 
-  login : boolean;
   constructor(private toastController : ToastController, private router : Router, private conexionBD : DbservicioService) {
 
   }
@@ -45,8 +44,7 @@ export class HomePage {
   // FALTA TERMINAR ESTA WEA CTM
   iniciar(){
     this.conexionBD.login(this.usu, this.pass);
-    this.login = this.conexionBD.res2;
-    if(this.login){
+    if(this.usu == this.listaUsu[0].correo && this.pass == this.listaUsu[0].contrasena){
       this.mensaje('REDIRECCION');
       this.router.navigate(['/inicio']);
     }else{
@@ -67,7 +65,7 @@ export class HomePage {
     this.conexionBD.dbState().subscribe((res)=>{
       if(res){
         //subscribo a los cambios en las consultas de BD
-        this.conexionBD.fetchUsu().subscribe(item=>{
+        this.conexionBD.fetchLogin().subscribe(item => {
           this.listaUsu = item;
         })
       }
