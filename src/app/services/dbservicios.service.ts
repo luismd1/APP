@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
-import { AlertController, Platform } from '@ionic/angular';
+import { AlertController, Platform, ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Usuario } from './usuario';
 import { Viaje } from './viaje';
 import { Auto } from './auto';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,15 +15,15 @@ export class DbservicioService {
   //variables para crear tablas e insertar registros por defecto en tablas
   tablaUsuario = "CREATE TABLE IF NOT EXISTS usuario(id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, correo VARCHAR(50) NOT NULL, contrasena VARCHAR(50) NOT NULL);";
   tablaAuto = "CREATE TABLE IF NOT EXISTS auto (id_auto INTEGER PRIMARY KEY AUTOINCREMENT,patente VARCHAR(50) NOT NULL, marca VARCHAR(50) NOT NULL, modelo VARCHAR(50) NOT NULL, capacidad INTEGER NOT NULL);";
-  tablaViaje = "CREATE TABLE IF NOT EXISTS viaje(id_viaje INTEGER PRIMARY KEY AUTOINCREMENT,destino VARCHAR(50) NOT NULL, fecha DATE NOT NULL, hora DATE NOT NULL, pasajeros INTEGER NOT NULL, costo INTEGER NOT NULL);";
+  tablaViaje = "CREATE TABLE IF NOT EXISTS viaje(id_viaje INTEGER PRIMARY KEY AUTOINCREMENT,destino VARCHAR(50) NOT NULL, fecha VARCHAR(10) NOT NULL, hora VARCHAR(6) NOT NULL, pasajeros INTEGER NOT NULL, costo INTEGER NOT NULL);";
   tablaDescuento = "CREATE TABLE IF NOT EXISTS descuento(id_desc INTEGER PRIMARY KEY AUTOINCREMENT, codigo VARCHAR(50) NOT NULL, descuento FLOAT NOT NULL, estado BOOLEAN NOT NULL);";
   // Insert's
   insertUsuario = "INSERT OR IGNORE INTO usuario(id_usuario, correo, contrasena) VALUES (1,'seb.cortes@duocuc.cl', 'Hola123');";
   insertAuto = "INSERT OR IGNORE INTO auto(id_auto, patente, marca, modelo, capacidad) VALUES (1, 'AABB11', 'Chevrolet', 'Camaro', 5);";
-  insertViaje = "INSERT OR IGNORE INTO viaje(id_viaje, destino, fecha, hora, pasajeros, costo) VALUES (1, 'Valle grande', '2022-09-29', '08:20', 4, 5000);";
-  insertViaje2 = "INSERT OR IGNORE INTO viaje(id_viaje, destino, fecha, hora, pasajeros, costo) VALUES (2, 'Quilicura', '2022-09-29', '08:20', 4, 5000);";
+  insertViaje = "INSERT OR IGNORE INTO viaje VALUES (1, 'Valle grande', '10/07/2022', '08:20', 4, 5000);";
+  insertViaje2 = "INSERT OR IGNORE INTO viaje VALUES (2, 'Quilicura', '2022-09-29', '08:20', 4, 5000);";
   
-  insertDescuento = "INSERT OR IGNORE INTO descuento(id_desc, codigo, descuento, estado) VALUES (1, '1b3', 0.5, true);";
+  insertDescuento = "INSERT OR IGNORE INTO descuento(id_desc, codigo, descuento, estado) VALUES (1, '1b3', 0.5, 1);";
 
 
 
@@ -43,9 +44,9 @@ export class DbservicioService {
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   //observable para el login
-  usuarioActual = new BehaviorSubject([]);
+  usuarioActual : BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private toastController : ToastController, private router : Router) {
     this.crearBD();
   }
 
@@ -58,6 +59,14 @@ export class DbservicioService {
     });
 
     await alert.present();
+  }
+
+  async mensaje(texto) {
+    const toast = await this.toastController.create({
+      message: texto,
+      duration: 2000
+    });
+    toast.present();
   }
 
   //método para crear la base de datos
@@ -121,7 +130,7 @@ export class DbservicioService {
     return this.listaUsuarios.asObservable();
   }
 
-  fetchLogin() : Observable<Usuario[]> {
+  fetchLogin(){
     return this.usuarioActual.asObservable();
   }
 
@@ -189,18 +198,13 @@ export class DbservicioService {
   // FUNCION QUE CONPRUEBA SI LA CLAVE Y EL USUARIO SON CORRECTOS
   login(usu, contra){
     let data = [usu, contra];
-    let items : Usuario[] = [];
     this.database.executeSql('SELECT * FROM usuario WHERE correo = ? AND contrasena = ?;',data).then(res => {
       if (res.rows.length > 0){
-        for (var i = 0; i < res.rows.length;){
-          items.push({
-            idUsuario : res.rows.item(i).id_usuario,
-            correo : res.rows.item(i).correo,
-            contrasena : res.rows.item(i).contrasena
-          });
-        }
+        this.usuarioActual.next(true);
+        this.router.navigate(['/inicio']);
+      }else {
+        this.mensaje('Usuario y/o contraseña incorrecta');
       }
-      this.usuarioActual.next(items);
     });
   }
 
@@ -210,13 +214,6 @@ export class DbservicioService {
       this.buscarViajes();
     });
 
-  }
-
-  crearUsuario(correo, contra){
-    let data = [correo, contra];
-    return this.database.executeSql('INSERT OR IGNORE INTO usuario(correo, contrasena) VALUES (?, ?);').then(res => {
-      this.buscarUsuario();
-    });
   }
 
   crearViaje (destino, fecha, hora, pasajeros, costo){

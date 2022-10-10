@@ -27,10 +27,6 @@ export class HomePage {
 
   }
 
-  registro(){
-    this.router.navigate(['/registro']);
-  }
-
   claveOlvidada(){
     let navigationExtras : NavigationExtras = {
       state : {
@@ -40,16 +36,8 @@ export class HomePage {
     this.router.navigate(['/clave-olvidada'], navigationExtras);
   }
 
-
-  // FALTA TERMINAR ESTA WEA CTM
   iniciar(){
     this.conexionBD.login(this.usu, this.pass);
-    if(this.usu == this.listaUsu[0].correo && this.pass == this.listaUsu[0].contrasena){
-      this.mensaje('REDIRECCION');
-      this.router.navigate(['/inicio']);
-    }else{
-      this.mensaje('Usuario y/o contraseña incorrecta');
-    }
   }
 
   async mensaje(texto) {
@@ -61,14 +49,5 @@ export class HomePage {
   }
 
   ngOnInit() {
-    //me subscribo al servicio
-    this.conexionBD.dbState().subscribe((res)=>{
-      if(res){
-        //subscribo a los cambios en las consultas de BD
-        this.conexionBD.fetchLogin().subscribe(item => {
-          this.listaUsu = item;
-        })
-      }
-    })
   }
 }
