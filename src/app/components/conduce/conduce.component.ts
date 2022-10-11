@@ -15,21 +15,24 @@ export class ConduceComponent implements OnInit {
   patente :  "";
   marca :  "";
   modelo : "";
-  capacidad: 0;
+  capacidad: "0";
+  id_usuario =1;
 
   // Datos del viaje
+  id_auto = 1;
   destino : "";
   fecha : "";
   hora : "";
-  pasajeros : 0;
+  pasajeros : "0";
   costo : "";
+  id_viaje = 3;
 
   constructor(private toastController : ToastController, private router : Router, private conexion : DbservicioService) { }
 
 
   guardarAuto(){
-    if(this.patente.length == 6 && this.marca.length > 2 && this.modelo.length > 2 && this.capacidad > 1){
-      this.conexion.crearAuto(this.patente, this.marca, this.modelo, this.capacidad);
+    if(true){
+      this.conexion.crearAuto(this.id_auto,this.patente, this.marca, this.modelo, this.capacidad, this.id_usuario);
       this.auto = true;
       this.conexion.presentAlert("Ahora puede ingresar un viaje ", "Auto guardado con éxito");
     }else{
@@ -37,8 +40,8 @@ export class ConduceComponent implements OnInit {
     }
   }
   guardarViaje(){
-    if(this.destino.length > 4 && this.pasajeros > 0 && this.fecha != null && this.hora != null){
-      this.conexion.crearViaje(this.destino, this.fecha, this.hora, this.pasajeros, this.costo);  
+    if(true){
+      this.conexion.crearViaje(this.id_viaje,this.destino, this.fecha, this.hora, this.pasajeros, this.costo  );  
       this.conexion.presentAlert("Ahora los usuarios podrán verlo en la sección de viajes ", "viaje agregado");
       this.router.navigate(['/inicio/viajar']);
     }else{

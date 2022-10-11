@@ -5,5 +5,7 @@ export class Viaje {
     hora: string;
     pasajeros: number;
     costo: number;
+    id_auto: number;
+    id_usuario: number;
 }
 

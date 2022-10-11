@@ -6,11 +6,15 @@
         <ion-item *ngFor="let i of listaViajes">
             <ion-grid>
                 <ion-row>
+                    <ion-col size="1">
+                        <p>{{ i.idViaje }}</p>
+                        
+                    </ion-col>
                     <ion-col size="9">
                         <p>{{ i.destino }}</p>
                     </ion-col>
-                    <ion-col size="3">
-                        <ion-button (click)="abrirModal(i.id)">
+                    <ion-col size="2">
+                        <ion-button (click)="abrirModal(i.idViaje)">
                             <ion-icon name="ellipsis-horizontal-circle-outline"></ion-icon>
                         </ion-button>
                     </ion-col>

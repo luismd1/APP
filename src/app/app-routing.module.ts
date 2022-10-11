@@ -20,10 +20,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/clave-olvidada/clave-olvidada.module').then( m => m.ClaveOlvidadaPageModule)
   },
   {
-    path: 'registro',
-    loadChildren: () => import('./pages/registro/registro.module').then( m => m.RegistroPageModule)
-  },
-  {
     path: 'perfil',
     loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
   },
