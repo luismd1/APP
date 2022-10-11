@@ -44,7 +44,7 @@ export class DbservicioService {
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   //observable para el login
-  usuarioActual : BehaviorSubject<boolean> = new BehaviorSubject(false);
+  usuarioActual = new BehaviorSubject([]);
 
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private toastController : ToastController, private router : Router) {
     this.crearBD();
@@ -130,7 +130,7 @@ export class DbservicioService {
     return this.listaUsuarios.asObservable();
   }
 
-  fetchLogin(){
+  fetchUsuarioActual() : Observable<Usuario[]>{
     return this.usuarioActual.asObservable();
   }
 
@@ -197,10 +197,18 @@ export class DbservicioService {
 
   // FUNCION QUE CONPRUEBA SI LA CLAVE Y EL USUARIO SON CORRECTOS
   login(usu, contra){
+    let items : Usuario[] = [];
     let data = [usu, contra];
     this.database.executeSql('SELECT * FROM usuario WHERE correo = ? AND contrasena = ?;',data).then(res => {
       if (res.rows.length > 0){
-        this.usuarioActual.next(true);
+        for (var i = 0; i < res.rows.length; i++){
+          items.push({
+            idUsuario : res.rows.item(i).id_usuario,
+            correo : res.rows.item(i).correo,
+            contrasena : res.rows.item(i).contrasena
+          });
+        }
+        this.usuarioActual.next(items);
         this.router.navigate(['/inicio']);
       }else {
         this.mensaje('Usuario y/o contraseña incorrecta');
