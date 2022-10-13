@@ -6,6 +6,7 @@ import { Usuario } from './usuario';
 import { Viaje } from './viaje';
 import { Auto } from './auto';
 import { Router } from '@angular/router';
+import { Usuarioviaje } from './usuarioviaje';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,16 +15,16 @@ export class DbservicioService {
   public database: SQLiteObject;
   //variables para crear tablas e insertar registros por defecto en tablas
   tablaUsuario = "CREATE TABLE IF NOT EXISTS usuario(id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, correo VARCHAR(50) NOT NULL, contrasena VARCHAR(50) NOT NULL);";
-  tablaAuto = "CREATE TABLE IF NOT EXISTS auto (id_auto INTEGER PRIMARY KEY AUTOINCREMENT,patente VARCHAR(50) NOT NULL, marca VARCHAR(50) NOT NULL, modelo VARCHAR(50) NOT NULL, capacidad INTEGER NOT NULL,FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)  );";
-  tablaViaje = "CREATE TABLE IF NOT EXISTS viaje(id_viaje INTEGER PRIMARY KEY AUTOINCREMENT,destino VARCHAR(50) NOT NULL, fecha VARCHAR(10) NOT NULL, hora VARCHAR(6) NOT NULL, pasajeros INTEGER NOT NULL, costo INTEGER NOT NULL ,FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ,FOREIGN KEY (id_auto) REFERENCES auto(id_auto)  );";
+  tablaAuto = "CREATE TABLE IF NOT EXISTS auto (id_auto INTEGER PRIMARY KEY AUTOINCREMENT,patente VARCHAR(50) NOT NULL, marca VARCHAR(50) NOT NULL, modelo VARCHAR(50) NOT NULL, capacidad INTEGER NOT NULL,fk_id_usuario INTEGER ,FOREIGN KEY (fk_id_usuario) REFERENCES usuario(id_usuario)  );";
+  tablaViaje = "CREATE TABLE IF NOT EXISTS viaje(id_viaje INTEGER PRIMARY KEY AUTOINCREMENT,destino VARCHAR(50) NOT NULL, fecha VARCHAR(10) NOT NULL, hora VARCHAR(6) NOT NULL, pasajeros INTEGER NOT NULL, costo INTEGER NOT NULL, fk_id_auto INTEGER , estado BOOLEAN NOT NULL, FOREIGN KEY (fk_id_auto) REFERENCES auto(id_auto) );";
   tablaDescuento = "CREATE TABLE IF NOT EXISTS descuento(id_desc INTEGER PRIMARY KEY AUTOINCREMENT, codigo VARCHAR(50) NOT NULL, descuento FLOAT NOT NULL, estado BOOLEAN NOT NULL);";
   // Insert's
   insertUsuario = "INSERT OR IGNORE INTO usuario(id_usuario, correo, contrasena) VALUES (1,'seb.cortes@duocuc.cl', 'Hola123');";
-  insertAuto = "INSERT OR IGNORE INTO auto VALUES (1, 'AABB11', 'Chevrolet', 'Camaro', 5);";
-  insertViaje = "INSERT OR IGNORE INTO viaje VALUES (1, 'Valle grande,Psje Rio maule', '10/07/2022', '08:20', 4, 5000);";
-  insertViaje2 = "INSERT OR IGNORE INTO viaje VALUES (2, 'Quilicura,Las torres', '2022-09-29', '08:20', 4, 5000);";
+  insertAuto = "INSERT OR IGNORE INTO auto VALUES (1, 'AABB11', 'Chevrolet', 'Camaro', 5,1);";
+  insertViaje = "INSERT OR IGNORE INTO viaje VALUES (1, 'Valle grande,Psje Rio maule', '10/07/2022', '08:20', 4, 5000,1,1);";
+  insertViaje2 = "INSERT OR IGNORE INTO viaje VALUES (2, 'Quilicura,Las torres', '2022-09-29', '08:20', 4, 5000,1,1);";
   
-  insertDescuento = "INSERT OR IGNORE INTO descuento(id_desc, codigo, descuento, estado) VALUES (1, '1b3', 0.5, 1);";
+  //insertDescuento = "INSERT OR IGNORE INTO descuento(id_desc, codigo, descuento, estado) VALUES (1, '1b3', 0.5, 1);";
 
 
 
@@ -31,7 +32,7 @@ export class DbservicioService {
 
   // FALTA ESTA TABLA
   // FALTA HACER LA RELACION ENTRE LAS TABLAS 
-  tablaUsuarioViaje = "FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),FOREIGN KEY (id_viaje) REFERENCES viaje(id_viaje)";
+  tablaUsuarioViaje = "CREATE TABLE IF NOT EXISTS usuarioviaje (id_usuario_viaje INTEGER PRIMARY KEY AUTOINCREMENT ,fk_id_usuario INTEGER,fk_id_viaje INTEGER,FOREIGN KEY (fk_id_usuario) REFERENCES usuario(id_usuario),FOREIGN KEY (fk_id_viaje) REFERENCES viaje(id_viaje))";
 
 
 
@@ -39,12 +40,16 @@ export class DbservicioService {
   listaAutos = new BehaviorSubject([]);
   listaViajes = new BehaviorSubject([]);
   listaUsuarios = new BehaviorSubject([]);
+  listaUsuariosviajes = new BehaviorSubject([]);
 
   //observable para validar si la BD esta disponible o no
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   //observable para el login
   usuarioActual = new BehaviorSubject([]);
+  idViaje : number;
+  idAuto: number;
+  fkAuto: number;
 
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private toastController : ToastController, private router : Router) {
     this.crearBD();
@@ -102,12 +107,13 @@ export class DbservicioService {
       await this.database.executeSql(this.insertAuto, []);
       await this.database.executeSql(this.insertViaje, []);
       await this.database.executeSql(this.insertViaje2, []);
-      await this.database.executeSql(this.insertDescuento, []);
+      await this.database.executeSql(this.tablaUsuarioViaje, []);
+      //await this.database.executeSql(this.insertDescuento, []);
       //puedo mostrar mensaje de tablas creadas
       this.presentAlert("Tablas Creadas", "Creación de Tablas");
       //llamar a metodo para traer todos los registros de la tabla
-      this.buscarViajes();
-      this.buscarUsuario();
+      //this.buscarViajes();
+      //this.buscarUsuario();
       //manipular observable de la bd lista
       this.isDBReady.next(true);
     } catch (e) {
@@ -133,7 +139,13 @@ export class DbservicioService {
   fetchUsuarioActual() : Observable<Usuario[]>{
     return this.usuarioActual.asObservable();
   }
+  fetchUsuarioViaje(): Observable<Usuarioviaje[]> {
+    return this.listaUsuariosviajes.asObservable();
+    }
 
+  buscarusuactual(){
+    
+  }
   // BUSCAR VIAJE 
   buscarViajes() {
     //realizamos la consulta a la BD
@@ -149,8 +161,8 @@ export class DbservicioService {
             hora: res.rows.item(i).hora,
             pasajeros: res.rows.item(i).pasajeros,
             costo: res.rows.item(i).costo,
-            id_auto: res.rows.item(i).id_auto,
-            id_usuario: res.rows.item(i).id_usuario
+            fk_id_auto: res.rows.item(i).fk_id_auto,
+            estado: res.rows.item(i).estado
           });
 
         }
@@ -170,13 +182,13 @@ export class DbservicioService {
             marca: res.rows.item(i).marca, 
             modelo: res.rows.item(i).modelo,
             capacidad: res.rows.item(i).capacidad,
-            id_usuario: res.rows.item(i).id_usuario
+            fk_id_usuario: res.rows.item(i).fk_id_usuario
             
           });
 
         }
       }
-      this.listaViajes.next(irems);
+      this.listaAutos.next(irems);
     })
   }
 
@@ -194,7 +206,24 @@ export class DbservicioService {
           });
         }
       }
-      this.listaViajes.next(items);
+      this.listaUsuarios.next(items);
+
+    })
+  }
+  buscarViajePorUsuario(){
+    let data = [this.usuarioActual.value[0].idUsuario];
+    return this.database.executeSql('SELECT * FROM usuarioviaje WHERE fk_id_usuario = ?;',data).then(res => {
+      let items: Usuarioviaje[] = [];
+      if (res.rows.length > 0) {
+        for (var i = 0; i < res.rows.length; i++) {
+          items.push({
+            id_usuario_viaje : res.rows.item(i).id_usuario_viaje,
+            fk_id_usuario : res.rows.item(i).fk_id_usuario,
+            fk_id_viaje : res.rows.item(i).fk_id_viaje
+          });
+        }
+      }
+      this.listaUsuariosviajes.next(items);
 
     })
   }
@@ -228,10 +257,12 @@ export class DbservicioService {
 
   }
 
-  crearViaje (id_viaje,destino, fecha, hora, pasajeros, costo){
-    let data = [id_viaje,destino, fecha, hora,pasajeros, costo];
+  crearViaje (destino, fecha, hora, pasajeros, costo, estado){
+    let data = [this.idViaje,destino, fecha, hora,pasajeros, costo,this.fkAuto, estado];
+    this.maxviaje();
+    this.fkauto();
     console.log(data);
-    this.database.executeSql('INSERT OR IGNORE INTO viaje VALUES ( ?, ?, ?, ?, ?, ?);',data).then(res => {
+    this.database.executeSql('INSERT OR IGNORE INTO viaje VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);',data).then(res => {
       this.buscarViajes();
       this.presentAlert('XDXDXDD','XDXDXD');
     }).catch(e => {
@@ -239,11 +270,64 @@ export class DbservicioService {
   })
   }
 
-  crearAuto (id_auto,patente, marca, modelo, capacidad,id_usuario){
-    let data = [id_auto,patente, marca, modelo, capacidad,id_usuario];
-    return this.database.executeSql('INSERT OR IGNORE INTO auto(id_auto,patente, marca, modelo, capacidad,id_usuario) VALUES (?, ?, ?, ?, ?, ?);',data).then(res => {
+  crearAuto (patente, marca, modelo, capacidad){
+    let data = [this.idAuto,patente, marca, modelo, capacidad,this.usuarioActual.value[0].idUsuario];
+    this.maxauto();
+    return this.database.executeSql('INSERT OR IGNORE INTO auto VALUES (?, ?, ?, ?, ?, ?);',data).then(res => {
       this.buscarAuto();
-    });
+      this.presentAlert('XDXDXDD','XDXDXD');
+    }).catch(e => {
+      this.presentAlert(e, "QUE PASA");
+  })
   }
+
+  maxviaje(){
+    return this.database.executeSql('SELECT MAX(id_viaje)+1 FROM viaje;').then(res => {
+      
+      if (res.rows.length > 0) {
+        for (var i = 0; i < res.rows.length; i++) {
+
+            this.idViaje= res.rows.item(i).id_viaje
+          this.presentAlert("ola", "ola");
+
+        }
+      }
+
+    });
+
+  }
+  maxauto(){
+    return this.database.executeSql('SELECT MAX(id_auto)+1 FROM auto;').then(res => {
+      
+      if (res.rows.length > 0) {
+        for (var i = 0; i < res.rows.length; i++) {
+
+            this.idAuto= res.rows.item(i).id_auto
+          this.presentAlert("ola", "ola");
+
+        }
+      }
+
+    });
+
+  }
+
+  fkauto(){
+    let data = [this.usuarioActual.value[0].idUsuario];
+    return this.database.executeSql('SELECT id_auto FROM auto where fk_id_cliente=?;',data).then(res => {
+      
+      if (res.rows.length > 0) {
+        for (var i = 0; i < res.rows.length; i++) {
+
+            this.fkAuto= res.rows.item(i).fk_id_auto
+          this.presentAlert("ola", "ola");
+
+        }
+      }
+
+    });
+
+  }
+
 
 }

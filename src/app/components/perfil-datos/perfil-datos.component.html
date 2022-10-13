@@ -13,26 +13,40 @@
       </ion-row>
   
       <br>
-      <ion-item>
-        <ion-row>
-          <ion-col size="12">
-            <p>Cambiar foto de perfil</p>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="12">
-            <ion-icon color="warning" name="duplicate-outline"></ion-icon>
-          </ion-col>
-        </ion-row>
-      </ion-item>
+
     </ion-card-header>
   
     <ion-card-content>
   
-      
-      <ion-item>
-        <h5> correo: {{ usuarioperfil }} </h5>
+      <ion-item *ngFor="let i of listaDatos">
+        <ion-grid>
+
+            <ion-row>
+              <ion-col size="6">
+                <p>Cambiar foto de perfil</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="6">
+                <ion-icon color="warning" name="duplicate-outline"></ion-icon>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+
+                <ion-item>
+                  <h5> correo: {{ i.correo }} </h5>
+                </ion-item>
+              
+              </ion-col>
+            </ion-row>
+
+
+        </ion-grid>
       </ion-item>
+
+
 
   
     </ion-card-content>

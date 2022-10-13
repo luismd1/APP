@@ -4,5 +4,5 @@ export class Auto {
     marca : string;
     modelo : string;
     capacidad : number;
-    id_usuario : number;
+    fk_id_usuario : number;
 }
