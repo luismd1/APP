@@ -14,19 +14,7 @@ export class InicioPage implements OnInit {
   actual : boolean = false;
 
   constructor(private router : Router, private activedRoute : ActivatedRoute,private toastController : ToastController) {
-    this.activedRoute.queryParams.subscribe(params => {
-      if(this.router.getCurrentNavigation().extras.state){
-        this.usu = this.router.getCurrentNavigation().extras.state.usuario;
-        this.contra1 = this.router.getCurrentNavigation().extras.state.contra; 
-        
-      }
-      if(this.router.getCurrentNavigation().extras.state.actual){
-        this.actual = this.router.getCurrentNavigation().extras.state.actual;
-      }else{console.log('xdxd');}
-      console.log(this.actual);
-      this.router.navigate(['inicio/viajar']);
-    })
-    
+    this.router.navigate(['inicio/viajar']);
   }
 
   iniciar(){

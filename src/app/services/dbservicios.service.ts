@@ -15,14 +15,14 @@ export class DbservicioService {
   public database: SQLiteObject;
   //variables para crear tablas e insertar registros por defecto en tablas
   tablaUsuario = "CREATE TABLE IF NOT EXISTS usuario(id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, correo VARCHAR(50) NOT NULL, contrasena VARCHAR(50) NOT NULL);";
-  tablaAuto = "CREATE TABLE IF NOT EXISTS auto (id_auto INTEGER PRIMARY KEY AUTOINCREMENT,patente VARCHAR(50) NOT NULL, marca VARCHAR(50) NOT NULL, modelo VARCHAR(50) NOT NULL, capacidad INTEGER NOT NULL,fk_id_usuario INTEGER ,FOREIGN KEY (fk_id_usuario) REFERENCES usuario(id_usuario)  );";
+  tablaAuto = "CREATE TABLE IF NOT EXISTS auto (id_auto INTEGER PRIMARY KEY AUTOINCREMENT,patente VARCHAR(50) NOT NULL, marca VARCHAR(50) NOT NULL, modelo VARCHAR(50) NOT NULL, capacidad INTEGER NOT NULL,fk_id_usuario INTEGER ,FOREIGN KEY (fk_id_usuario) REFERENCES usuario(id_usuario));";
   tablaViaje = "CREATE TABLE IF NOT EXISTS viaje(id_viaje INTEGER PRIMARY KEY AUTOINCREMENT,destino VARCHAR(50) NOT NULL, fecha VARCHAR(10) NOT NULL, hora VARCHAR(6) NOT NULL, pasajeros INTEGER NOT NULL, costo INTEGER NOT NULL, fk_id_auto INTEGER , estado BOOLEAN NOT NULL, FOREIGN KEY (fk_id_auto) REFERENCES auto(id_auto) );";
   tablaDescuento = "CREATE TABLE IF NOT EXISTS descuento(id_desc INTEGER PRIMARY KEY AUTOINCREMENT, codigo VARCHAR(50) NOT NULL, descuento FLOAT NOT NULL, estado BOOLEAN NOT NULL);";
   // Insert's
   insertUsuario = "INSERT OR IGNORE INTO usuario(id_usuario, correo, contrasena) VALUES (1,'seb.cortes@duocuc.cl', 'Hola123');";
-  insertAuto = "INSERT OR IGNORE INTO auto VALUES (1, 'AABB11', 'Chevrolet', 'Camaro', 5,1);";
-  insertViaje = "INSERT OR IGNORE INTO viaje VALUES (1, 'Valle grande,Psje Rio maule', '10/07/2022', '08:20', 4, 5000,1,1);";
-  insertViaje2 = "INSERT OR IGNORE INTO viaje VALUES (2, 'Quilicura,Las torres', '2022-09-29', '08:20', 4, 5000,1,1);";
+  insertAuto = "INSERT OR IGNORE INTO auto VALUES (1, 'AABB11', 'Chevrolet', 'Camaro', 5, 1);";
+  insertViaje = "INSERT OR IGNORE INTO viaje VALUES (1, 'Valle grande,Psje Rio maule', '10/07/2022', '08:20', 4, 5000,1, true);";
+  insertViaje2 = "INSERT OR IGNORE INTO viaje VALUES (2, 'Quilicura,Las torres', '2022-09-29', '08:20', 4, 5000,1, true);";
   
   //insertDescuento = "INSERT OR IGNORE INTO descuento(id_desc, codigo, descuento, estado) VALUES (1, '1b3', 0.5, 1);";
 
@@ -105,9 +105,9 @@ export class DbservicioService {
       //INSERT'S A LAS TABLAS
       await this.database.executeSql(this.insertUsuario, []);
       await this.database.executeSql(this.insertAuto, []);
-      await this.database.executeSql(this.insertViaje, []);
-      await this.database.executeSql(this.insertViaje2, []);
-      await this.database.executeSql(this.tablaUsuarioViaje, []);
+      //await this.database.executeSql(this.insertViaje, []);
+      //await this.database.executeSql(this.insertViaje2, []);
+      //await this.database.executeSql(this.tablaUsuarioViaje, []);
       //await this.database.executeSql(this.insertDescuento, []);
       //puedo mostrar mensaje de tablas creadas
       this.presentAlert("Tablas Creadas", "Creación de Tablas");
