@@ -14,7 +14,7 @@ export class ServicioCamaraService {
   tomarFoto(){
     const options : CameraOptions = {
       quality : 100,
-      destinationType : this.camara.DestinationType.FILE_URI,
+      destinationType : this.camara.DestinationType.DATA_URL,
       encodingType : this.camara.EncodingType.JPEG,
       mediaType : this.camara.MediaType.PICTURE
     }
