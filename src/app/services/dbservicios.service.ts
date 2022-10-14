@@ -105,9 +105,9 @@ export class DbservicioService {
       //INSERT'S A LAS TABLAS
       await this.database.executeSql(this.insertUsuario, []);
       await this.database.executeSql(this.insertAuto, []);
-      //await this.database.executeSql(this.insertViaje, []);
-      //await this.database.executeSql(this.insertViaje2, []);
-      //await this.database.executeSql(this.tablaUsuarioViaje, []);
+      await this.database.executeSql(this.insertViaje, []);
+      await this.database.executeSql(this.insertViaje2, []);
+      await this.database.executeSql(this.tablaUsuarioViaje, []);
       //await this.database.executeSql(this.insertDescuento, []);
       //puedo mostrar mensaje de tablas creadas
       this.presentAlert("Tablas Creadas", "Creación de Tablas");
@@ -327,6 +327,15 @@ export class DbservicioService {
 
     });
 
+  }
+
+  viajeActual(){
+    let data = [];
+    this.database.executeSql('SELECT * FROM viaje WHERE idConductor = ? OR ;', data).then(res => {
+      if (res.rows.length > 0){
+        //xdxdxd
+      }
+    });
   }
 
 
