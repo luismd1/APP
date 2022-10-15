@@ -11,9 +11,11 @@ import { DbservicioService } from 'src/app/services/dbservicios.service';
 export class PerfilHistorialComponent implements OnInit {
   listaUsuariosviajes: any = [
     {
-      id_usuario_viaje: '',
-      pk_id_viaje : '',
-      pk_id_auto: ''
+      destino: '',
+      fecha : '',
+      hora: '',
+      costo: '',
+      estado: ''
     }
   ]
 

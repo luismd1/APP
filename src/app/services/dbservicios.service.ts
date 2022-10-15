@@ -219,14 +219,16 @@ export class DbservicioService {
   }
   buscarViajePorUsuario() {
     let data = [this.usuarioActual.value[0].idUsuario];
-    return this.database.executeSql('SELECT v.destino,v.fecha,v.hora,v.costo FROM viaje v  INNER JOIN usuarioviaje uv ON v.id_viaje = uv.fk_id_viaje  INNER JOIN usuario u ON u.id_usuario = pk_id_usuario  WHERE id_usuario = ?;', data).then(res => {
+    return this.database.executeSql('SELECT v.destino,v.fecha,v.hora,v.costo,v.estado FROM viaje v INNER JOIN usuarioviaje uv ON v.id_viaje = uv.fk_id_viaje  INNER JOIN usuario u ON u.id_usuario = uv.fk_id_usuario  WHERE u.id_usuario = ?;', data).then(res => {
       let items: Usuarioviaje[] = [];
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++) {
           items.push({
-            id_usuario_viaje: res.rows.item(i).id_usuario_viaje,
-            fk_id_usuario: res.rows.item(i).fk_id_usuario,
-            fk_id_viaje: res.rows.item(i).fk_id_viaje
+            destino: res.rows.item(i).destino,
+            fecha: res.rows.item(i).fecha,
+            hora: res.rows.item(i).hora,
+            costo: res.rows.item(i).costo,
+            estado: res.rows.item(i).estado
           });
         }
       }
@@ -351,12 +353,20 @@ export class DbservicioService {
   }
 
   verViajeActual() {
+    let items = [];
     let data = [this.usuarioActual.value[0].idUsuario, this.usuarioActual.value[0].idUsuario];
-    this.database.executeSql('SELECT v.id_viaje FROM viaje v INNER JOIN usuarioviaje u ON v.id_viaje = u.id_viaje WHERE v.id_conductor = ? OR v.id_usuario = ? and v.estado = true;', data).then(res => {
+    this.database.executeSql('SELECT v.id_viaje, v.destino, v.fecha, v.hora, v.costo FROM viaje v INNER JOIN usuarioviaje u ON v.id_viaje = u.id_viaje WHERE v.id_conductor = ? OR v.id_usuario = ? and v.estado = true;', data).then(res => {
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++){
-          this.viajeActual = res.rows.item(i).id_viaje;
+          items.push({
+            id_viaje : res.rows.item(i).id_viaje,
+            destino : res.rows.item(i).destino,
+            fecha : res.rows.item(i).fecha,
+            hora : res.rows.item(i).hora,
+            costo : res.rows.item(i).costo
+          }); 
         } 
+        console.log('todo bien todo correcto');  
       }
     }).catch(e => {
       console.log('Error verViajeActual: ' + e);

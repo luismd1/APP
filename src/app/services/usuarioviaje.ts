@@ -1,6 +1,7 @@
 export class Usuarioviaje {
-    id_usuario_viaje: number;
-    fk_id_usuario : number;
-    fk_id_viaje : number;
-
+destino: string;
+fecha: string;
+hora: string;
+costo: string;
+estado:boolean;
 }

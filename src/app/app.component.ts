@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { DbservicioService } from 'src/app/services/dbservicios.service';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +7,7 @@ import { DbservicioService } from 'src/app/services/dbservicios.service';
 })
 export class AppComponent {
 
-  constructor(private conexionDB : DbservicioService) {
-    conexionDB.verViajeActual();
-  }
+  constructor(){}
 
 
 }

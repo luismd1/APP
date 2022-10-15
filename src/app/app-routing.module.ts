@@ -32,13 +32,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/mapa/mapa.module').then( m => m.MapaPageModule)
   },
   {
+    path: 'vivo',
+    loadChildren: () => import('./pages/vivo/vivo.module').then( m => m.VivoPageModule)
+  },
+  {
     /* Not Found */
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
-  },
-  {
-    path: 'vivo',
-    loadChildren: () => import('./pages/vivo/vivo.module').then( m => m.VivoPageModule)
   },
 
 

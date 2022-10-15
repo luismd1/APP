@@ -10,10 +10,12 @@ import { ToastController } from '@ionic/angular';
 })
 export class VivoPage implements OnInit {
 
+  viajeActual : any;
+  actual : boolean;
 
-
-  constructor(private conexionDB : DbservicioService, private toastController : ToastController, private router : Router) {
-
+  constructor(private conexionBD : DbservicioService, private toastController : ToastController, private router : Router) {
+    conexionBD.verViajeActual();
+    this.verActual();
   }
 
   mapa(){
@@ -22,6 +24,14 @@ export class VivoPage implements OnInit {
 
   cancelar(){
     this.mensaje('Viaje cancelado');
+  }
+
+  verActual(){
+    if(this.viajeActual > 0){
+      this.actual = true;
+    }else{
+      this.actual = false;
+    }
   }
 
   async mensaje(texto) {
@@ -33,6 +43,13 @@ export class VivoPage implements OnInit {
   }
 
   ngOnInit() {
+    this.conexionBD.dbState().subscribe((res) => {
+      if(res){
+        this.conexionBD.fetchViajeActual().subscribe(item => {
+          this.viajeActual = item;
+        });
+      }
+    });
   }
 
 }
