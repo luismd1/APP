@@ -55,9 +55,8 @@ export class PerfilHistorialComponent implements OnInit {
   //  },
   //]
 
-  constructor(private modalCtrl : ModalController,private conexion : DbservicioService, private router : Router,
-     private toastController : ToastController, private activedRoute : ActivatedRoute) {
-    conexion. buscarViajePorUsuario();
+  constructor(private modalCtrl : ModalController,private conexion : DbservicioService, private router : Router,private toastController : ToastController, private activedRoute : ActivatedRoute) {
+    conexion.buscarViajePorUsuario();
   }
 
   ngOnInit() {

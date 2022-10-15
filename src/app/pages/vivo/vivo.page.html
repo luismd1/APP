@@ -4,14 +4,18 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <p>destino: {{ destino }}</p>
-  <p>hora: {{ hora }}</p>
-  <p>precio: {{ precio }}</p>
+<ion-content *ngIf="actual==true">
+  <p>destino: {{ viajeActual[0].destino }}</p>
+  <p>hora: {{ viajeActual[0].hora }}</p>
+  <p>precio: {{ viajeActual[0].costo }}</p>
   <ion-button (click)="mapa()">
     <ion-icon name="map-outline"></ion-icon>
   </ion-button>
   <ion-button (click)="cancelar()">
     <ion-icon name="close-circle-outline"></ion-icon>
   </ion-button>
+</ion-content>
+
+<ion-content *ngIf="actual==false">
+  <p>No tienes ningun viaje activo</p>
 </ion-content>

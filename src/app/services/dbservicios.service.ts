@@ -40,9 +40,11 @@ export class DbservicioService {
   listaAutos = new BehaviorSubject([]);
   listaViajes = new BehaviorSubject([]);
   listaUsuarios = new BehaviorSubject([]);
+
+  //observable para el historial de viajes
   listaUsuariosviajes = new BehaviorSubject([]);
   //observable para el viaje actual
-  viajeActual : BehaviorSubject<number> = new BehaviorSubject(null);
+  viajeActual = new BehaviorSubject([]);
   //observable para validar si la BD esta disponible o no
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -219,6 +221,7 @@ export class DbservicioService {
   }
   buscarViajePorUsuario() {
     let data = [this.usuarioActual.value[0].idUsuario];
+    console.log(data);
     return this.database.executeSql('SELECT v.destino,v.fecha,v.hora,v.costo,v.estado FROM viaje v INNER JOIN usuarioviaje uv ON v.id_viaje = uv.fk_id_viaje  INNER JOIN usuario u ON u.id_usuario = uv.fk_id_usuario  WHERE u.id_usuario = ?;', data).then(res => {
       let items: Usuarioviaje[] = [];
       if (res.rows.length > 0) {
@@ -229,9 +232,11 @@ export class DbservicioService {
             hora: res.rows.item(i).hora,
             costo: res.rows.item(i).costo,
             estado: res.rows.item(i).estado
+            
           });
         }
       }
+      console.log(items);
       this.listaUsuariosviajes.next(items);
       this.presentAlert("bien", "Viajes del usuario");
     }).catch(e => {
@@ -355,7 +360,7 @@ export class DbservicioService {
   verViajeActual() {
     let items = [];
     let data = [this.usuarioActual.value[0].idUsuario, this.usuarioActual.value[0].idUsuario];
-    this.database.executeSql('SELECT v.id_viaje, v.destino, v.fecha, v.hora, v.costo FROM viaje v INNER JOIN usuarioviaje u ON v.id_viaje = u.id_viaje WHERE v.id_conductor = ? OR v.id_usuario = ? and v.estado = true;', data).then(res => {
+    this.database.executeSql('SELECT v.id_viaje, v.destino, v.fecha, v.hora, v.costo FROM viaje v INNER JOIN usuarioviaje u ON v.id_viaje = u.fk_id_viaje WHERE v.id_conductor = ? OR u.fk_id_usuario = ? AND v.estado = true;', data).then(res => {
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++){
           items.push({
@@ -366,12 +371,12 @@ export class DbservicioService {
             costo : res.rows.item(i).costo
           }); 
         } 
-        console.log('todo bien todo correcto');  
+        this.viajeActual.next(items);
+        console.log("todo bien todo correcto");  
       }
     }).catch(e => {
       console.log('Error verViajeActual: ' + e);
     });
   }
-
 
 }
