@@ -42,6 +42,8 @@ export class DbservicioService {
   listaAutos = new BehaviorSubject([]);
   listaViajes = new BehaviorSubject([]);
   listaUsuarios = new BehaviorSubject([]);
+
+  //observable para el historial de viajes
   listaUsuariosviajes = new BehaviorSubject([]);
   //observable para el viaje actual
   viajeActual = new BehaviorSubject([]);
@@ -225,7 +227,8 @@ export class DbservicioService {
   }
   buscarViajePorUsuario() {
     let data = [this.usuarioActual.value[0].idUsuario];
-    return this.database.executeSql('SELECT v.destino,v.fecha,v.hora,v.costo FROM viaje v  INNER JOIN usuarioviaje uv ON v.id_viaje = uv.fk_id_viaje  INNER JOIN usuario u ON u.id_usuario = pk_id_usuario  WHERE id_usuario = ?;', data).then(res => {
+    console.log(data);
+    return this.database.executeSql('SELECT v.destino,v.fecha,v.hora,v.costo,v.estado FROM viaje v INNER JOIN usuarioviaje uv ON v.id_viaje = uv.fk_id_viaje  INNER JOIN usuario u ON u.id_usuario = uv.fk_id_usuario  WHERE u.id_usuario = ?;', data).then(res => {
       let items: Usuarioviaje[] = [];
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++) {
@@ -235,9 +238,11 @@ export class DbservicioService {
             hora: res.rows.item(i).hora,
             costo: res.rows.item(i).costo,
             estado: res.rows.item(i).estado
+            
           });
         }
       }
+      console.log(items);
       this.listaUsuariosviajes.next(items);
       this.presentAlert("bien", "Viajes del usuario");
     }).catch(e => {

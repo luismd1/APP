@@ -57,7 +57,7 @@ export class PerfilHistorialComponent implements OnInit {
   //]
 
   constructor(private modalCtrl : ModalController,private conexion : DbservicioService, private router : Router,private toastController : ToastController, private activedRoute : ActivatedRoute) {
-    conexion. buscarViajePorUsuario();
+    conexion.buscarViajePorUsuario();
   }
   verusuarioviaje(){
     if(this.listaUsuariosviajes.length > 0){
