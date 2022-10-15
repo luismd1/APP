@@ -37,7 +37,7 @@
         <ion-label>Conduce</ion-label>
       </ion-tab-button>
 
-      <ion-tab-button tab="vivo" >
+      <ion-tab-button *ngIf="actual" tab="vivo" >
         <ion-icon name="location-outline"></ion-icon>
         <ion-label>En vivo</ion-label>
       </ion-tab-button>

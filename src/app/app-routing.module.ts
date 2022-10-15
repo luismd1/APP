@@ -36,6 +36,10 @@ const routes: Routes = [
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
+  {
+    path: 'vivo',
+    loadChildren: () => import('./pages/vivo/vivo.module').then( m => m.VivoPageModule)
+  },
 
 
 

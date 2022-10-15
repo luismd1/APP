@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { DbservicioService } from 'src/app/services/dbservicios.service';
 
 @Component({
   selector: 'app-inicio',
@@ -12,9 +13,12 @@ export class InicioPage implements OnInit {
   usu : string = "";
   contra1 : string ="";
   actual : boolean = false;
+  viajeActual : any;
 
-  constructor(private router : Router, private activedRoute : ActivatedRoute,private toastController : ToastController) {
+  constructor(private router : Router, private activedRoute : ActivatedRoute, private toastController : ToastController, private conexionBD : DbservicioService) {
+    conexionBD.verViajeActual();
     this.router.navigate(['inicio/viajar']);
+    this.verActual();
   }
 
   iniciar(){
@@ -26,6 +30,15 @@ export class InicioPage implements OnInit {
     }
     this.router.navigate(['/perfil'], navigationExtras);
   }
+
+  verActual(){
+    if(this.viajeActual > 0){
+      this.actual = true;
+    }else{
+      this.actual = false;
+    }
+  }
+
   async mensaje(texto) {
     const toast = await this.toastController.create({
       message: texto,
@@ -35,6 +48,13 @@ export class InicioPage implements OnInit {
   }
 
   ngOnInit() {
+    this.conexionBD.dbState().subscribe((res) => {
+      if(res){
+        this.conexionBD.fetchViajeActual().subscribe(item => {
+          this.viajeActual = item;
+        });
+      }
+    });
   }
 
 }

@@ -15,13 +15,7 @@ export class VivoComponent implements OnInit {
   precio : number;
 
   constructor(private toastController : ToastController, private router : Router, private activedRoute : ActivatedRoute) {
-    this.activedRoute.queryParams.subscribe(params => {
-      if(this.router.getCurrentNavigation().extras.state){
-        this.destino = this.router.getCurrentNavigation().extras.state.destino;
-        this.hora = this.router.getCurrentNavigation().extras.state.hora;
-        this.precio = this.router.getCurrentNavigation().extras.state.costo;
-      }
-    });
+    
   }
 
   mapa(){

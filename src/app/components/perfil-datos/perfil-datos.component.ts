@@ -34,6 +34,7 @@ export class PerfilDatosComponent implements OnInit {
   fotito(){
     this.camara.tomarFoto();
   }
+
   
   ngOnInit() {
     //me subscribo al servicio

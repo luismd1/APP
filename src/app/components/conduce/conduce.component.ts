@@ -24,10 +24,7 @@ export class ConduceComponent implements OnInit {
   fecha : "";
   hora : "";
   pasajeros : "0";
-  costo : "";
-  estado : "";
-  id_viaje = this.conexion.maxviaje();
-  
+  costo : "";  
 
   fk_id_auto = 1;
 
@@ -46,7 +43,7 @@ export class ConduceComponent implements OnInit {
   }
   guardarViaje(){
     if(true){
-      this.conexion.crearViaje(this.destino, this.fecha, this.hora, this.pasajeros, this.costo, this.estado  );  
+      this.conexion.crearViaje(this.destino, this.fecha, this.hora, this.pasajeros, this.costo);  
       this.conexion.presentAlert("Ahora los usuarios podrán verlo en la sección de viajes ", "viaje agregado");
       this.router.navigate(['/inicio/viajar']);
     }else{

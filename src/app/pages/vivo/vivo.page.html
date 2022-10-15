@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Tu viaje actual</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <p>destino: {{ destino }}</p>
+  <p>hora: {{ hora }}</p>
+  <p>precio: {{ precio }}</p>
+  <ion-button (click)="mapa()">
+    <ion-icon name="map-outline"></ion-icon>
+  </ion-button>
+  <ion-button (click)="cancelar()">
+    <ion-icon name="close-circle-outline"></ion-icon>
+  </ion-button>
+</ion-content>

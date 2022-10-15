@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { BorrarService } from '../services/borrarbd/borrar.service';
 import { DbservicioService } from '../services/dbservicios.service';
 
 @Component({

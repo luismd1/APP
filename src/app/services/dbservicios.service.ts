@@ -16,14 +16,14 @@ export class DbservicioService {
   //variables para crear tablas e insertar registros por defecto en tablas
   tablaUsuario = "CREATE TABLE IF NOT EXISTS usuario(id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, correo VARCHAR(50) NOT NULL, contrasena VARCHAR(50) NOT NULL);";
   tablaAuto = "CREATE TABLE IF NOT EXISTS auto (id_auto INTEGER PRIMARY KEY AUTOINCREMENT,patente VARCHAR(50) NOT NULL, marca VARCHAR(50) NOT NULL, modelo VARCHAR(50) NOT NULL, capacidad INTEGER NOT NULL,fk_id_usuario INTEGER ,FOREIGN KEY (fk_id_usuario) REFERENCES usuario(id_usuario));";
-  tablaViaje = "CREATE TABLE IF NOT EXISTS viaje(id_viaje INTEGER PRIMARY KEY AUTOINCREMENT,destino VARCHAR(50) NOT NULL, fecha VARCHAR(10) NOT NULL, hora VARCHAR(6) NOT NULL, pasajeros INTEGER NOT NULL, costo INTEGER NOT NULL, fk_id_auto INTEGER , estado BOOLEAN NOT NULL, FOREIGN KEY (fk_id_auto) REFERENCES auto(id_auto) );";
+  tablaViaje = "CREATE TABLE IF NOT EXISTS viaje(id_viaje INTEGER PRIMARY KEY AUTOINCREMENT, id_conductor INTEGER NOT NULL,destino VARCHAR(50) NOT NULL, fecha VARCHAR(10) NOT NULL, hora VARCHAR(6) NOT NULL, pasajeros INTEGER NOT NULL, costo INTEGER NOT NULL, estado BOOLEAN NOT NULL, fk_id_auto INTEGER, FOREIGN KEY (fk_id_auto) REFERENCES auto(id_auto) );";
   tablaDescuento = "CREATE TABLE IF NOT EXISTS descuento(id_desc INTEGER PRIMARY KEY AUTOINCREMENT, codigo VARCHAR(50) NOT NULL, descuento FLOAT NOT NULL, estado BOOLEAN NOT NULL);";
   // Insert's
   insertUsuario = "INSERT OR IGNORE INTO usuario(id_usuario, correo, contrasena) VALUES (1,'seb.cortes@duocuc.cl', 'Hola123');";
+  insertUsuario2 = "INSERT OR IGNORE INTO usuario(id_usuario, correo, contrasena) VALUES (2,'lu.munozd@duocuc.cl', 'Hola123');";
   insertAuto = "INSERT OR IGNORE INTO auto VALUES (1, 'AABB11', 'Chevrolet', 'Camaro', 5, 1);";
-  insertViaje = "INSERT OR IGNORE INTO viaje VALUES (1, 'Valle grande,Psje Rio maule', '10/07/2022', '08:20', 4, 5000,1, true);";
-  insertViaje2 = "INSERT OR IGNORE INTO viaje VALUES (2, 'Quilicura,Las torres', '2022-09-29', '08:20', 4, 5000,1, true);";
-  
+  insertViaje = "INSERT OR IGNORE INTO viaje VALUES (1, 1, 'Valle grande,Psje Rio maule', '10/07/2022', '08:20', 4, 5000,1, false);";
+  insertViaje2 = "INSERT OR IGNORE INTO viaje VALUES (2, 1, 'Quilicura,Las torres', '2022-09-29', '08:20', 4, 5000,1, false);";
   //insertDescuento = "INSERT OR IGNORE INTO descuento(id_desc, codigo, descuento, estado) VALUES (1, '1b3', 0.5, 1);";
 
 
@@ -41,17 +41,19 @@ export class DbservicioService {
   listaViajes = new BehaviorSubject([]);
   listaUsuarios = new BehaviorSubject([]);
   listaUsuariosviajes = new BehaviorSubject([]);
-
+  //observable para el viaje actual
+  viajeActual : BehaviorSubject<number> = new BehaviorSubject(null);
   //observable para validar si la BD esta disponible o no
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   //observable para el login
   usuarioActual = new BehaviorSubject([]);
-  idViaje : number;
+  //variables para ingreso de los ids correctamente
+  idViaje: number;
   idAuto: number;
   fkAuto: number;
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private toastController : ToastController, private router : Router) {
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private toastController: ToastController, private router: Router) {
     this.crearBD();
   }
 
@@ -102,12 +104,12 @@ export class DbservicioService {
       await this.database.executeSql(this.tablaAuto, []);
       await this.database.executeSql(this.tablaViaje, []);
       await this.database.executeSql(this.tablaDescuento, []);
+      await this.database.executeSql(this.tablaUsuarioViaje, []);
       //INSERT'S A LAS TABLAS
       await this.database.executeSql(this.insertUsuario, []);
       await this.database.executeSql(this.insertAuto, []);
       await this.database.executeSql(this.insertViaje, []);
       await this.database.executeSql(this.insertViaje2, []);
-      await this.database.executeSql(this.tablaUsuarioViaje, []);
       //await this.database.executeSql(this.insertDescuento, []);
       //puedo mostrar mensaje de tablas creadas
       this.presentAlert("Tablas Creadas", "Creación de Tablas");
@@ -120,7 +122,8 @@ export class DbservicioService {
       this.presentAlert(e, "Creación de Tablas");
     }
   }
-
+  
+  // FETCH Y DIVERSOS OBSERVABLES
   dbState() {
     return this.isDBReady.asObservable();
   }
@@ -136,15 +139,18 @@ export class DbservicioService {
     return this.listaUsuarios.asObservable();
   }
 
-  fetchUsuarioActual() : Observable<Usuario[]>{
+  fetchUsuarioActual(): Observable<Usuario[]> {
     return this.usuarioActual.asObservable();
   }
   fetchUsuarioViaje(): Observable<Usuarioviaje[]> {
     return this.listaUsuariosviajes.asObservable();
-    }
+  }
+  fetchViajeActual(){
+    return this.viajeActual.asObservable();
+  }
 
-  buscarusuactual(){
-    
+  buscarusuactual() {
+
   }
   // BUSCAR VIAJE 
   buscarViajes() {
@@ -156,6 +162,7 @@ export class DbservicioService {
         for (var i = 0; i < res.rows.length; i++) {
           items.push({
             idViaje: res.rows.item(i).id_viaje,
+            id_conductor: res.rows.item(i).id_conductor,
             destino: res.rows.item(i).destino,
             fecha: res.rows.item(i).fecha,
             hora: res.rows.item(i).hora,
@@ -171,7 +178,7 @@ export class DbservicioService {
 
     })
   }
-  buscarAuto(){
+  buscarAuto() {
     return this.database.executeSql('SELECT * FROM auto;', []).then(res => {
       let irems: Auto[] = [];
       if (res.rows.length > 0) {
@@ -179,11 +186,11 @@ export class DbservicioService {
           irems.push({
             idAuto: res.rows.item(i).id_auto,
             patente: res.rows.item(i).patente,
-            marca: res.rows.item(i).marca, 
+            marca: res.rows.item(i).marca,
             modelo: res.rows.item(i).modelo,
             capacidad: res.rows.item(i).capacidad,
             fk_id_usuario: res.rows.item(i).fk_id_usuario
-            
+
           });
 
         }
@@ -200,9 +207,9 @@ export class DbservicioService {
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++) {
           items.push({
-            idUsuario : res.rows.item(i).id_usuario,
-            correo : res.rows.item(i).correo,
-            contrasena : res.rows.item(i).contrasena
+            idUsuario: res.rows.item(i).id_usuario,
+            correo: res.rows.item(i).correo,
+            contrasena: res.rows.item(i).contrasena
           });
         }
       }
@@ -210,44 +217,47 @@ export class DbservicioService {
 
     })
   }
-  buscarViajePorUsuario(){
+  buscarViajePorUsuario() {
     let data = [this.usuarioActual.value[0].idUsuario];
-    return this.database.executeSql('SELECT * FROM usuarioviaje WHERE fk_id_usuario = ?;',data).then(res => {
+    return this.database.executeSql('SELECT v.destino,v.fecha,v.hora,v.costo FROM viaje v  INNER JOIN usuarioviaje uv ON v.id_viaje = uv.fk_id_viaje  INNER JOIN usuario u ON u.id_usuario = pk_id_usuario  WHERE id_usuario = ?;', data).then(res => {
       let items: Usuarioviaje[] = [];
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++) {
           items.push({
-            id_usuario_viaje : res.rows.item(i).id_usuario_viaje,
-            fk_id_usuario : res.rows.item(i).fk_id_usuario,
-            fk_id_viaje : res.rows.item(i).fk_id_viaje
+            id_usuario_viaje: res.rows.item(i).id_usuario_viaje,
+            fk_id_usuario: res.rows.item(i).fk_id_usuario,
+            fk_id_viaje: res.rows.item(i).fk_id_viaje
           });
         }
       }
       this.listaUsuariosviajes.next(items);
-
+      this.presentAlert("bien", "Viajes del usuario");
+    }).catch(e => {
+      this.presentAlert("mal", "Viajes del usuario");
     })
   }
 
   // FUNCION QUE CONPRUEBA SI LA CLAVE Y EL USUARIO SON CORRECTOS
-  login(usu, contra){
-    let items : Usuario[] = [];
+  login(usu, contra) {
+    let items: Usuario[] = [];
     let data = [usu, contra];
-    this.database.executeSql('SELECT * FROM usuario WHERE correo = ? AND contrasena = ?;',data).then(res => {
-      if (res.rows.length > 0){
-        for (var i = 0; i < res.rows.length; i++){
+    this.database.executeSql('SELECT * FROM usuario WHERE correo = ? AND contrasena = ?;', data).then(res => {
+      if (res.rows.length > 0) {
+        for (var i = 0; i < res.rows.length; i++) {
           items.push({
-            idUsuario : res.rows.item(i).id_usuario,
-            correo : res.rows.item(i).correo,
-            contrasena : res.rows.item(i).contrasena
+            idUsuario: res.rows.item(i).id_usuario,
+            correo: res.rows.item(i).correo,
+            contrasena: res.rows.item(i).contrasena
           });
         }
         this.usuarioActual.next(items);
         this.router.navigate(['/inicio']);
-      }else {
+      } else {
         this.mensaje('Usuario y/o contraseña incorrecta');
       }
     });
   }
+
 
   // ELIMINAR VIAJE
   eliminarViaje(id) {
@@ -257,84 +267,99 @@ export class DbservicioService {
 
   }
 
-  crearViaje (destino, fecha, hora, pasajeros, costo, estado){
-    let data = [this.idViaje,destino, fecha, hora,pasajeros, costo,this.fkAuto, estado];
-    this.maxviaje();
-    this.fkauto();
+  async crearViaje(destino, fecha, hora, pasajeros, costo) {
+    await this.maxviaje();
+    await this.verfkauto();
+    let data = [this.idViaje, this.usuarioActual.value[0].idUsuario, destino, fecha, hora, pasajeros, costo, true, this.fkAuto.valueOf()];
     console.log(data);
-    this.database.executeSql('INSERT OR IGNORE INTO viaje VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);',data).then(res => {
+    console.log(this.idViaje);
+    console.log(this.usuarioActual.value[0].idUsuario);
+    console.log(this.fkAuto);
+    this.database.executeSql('INSERT OR IGNORE INTO viaje VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?);', data).then(res => {
       this.buscarViajes();
-      this.presentAlert('XDXDXDD','XDXDXD');
+      this.presentAlert('XDXDXDD', 'CREAR VIEJA');
     }).catch(e => {
       this.presentAlert(e, "QUE PASA");
-  })
+    })
   }
 
-  crearAuto (patente, marca, modelo, capacidad){
-    let data = [this.idAuto,patente, marca, modelo, capacidad,this.usuarioActual.value[0].idUsuario];
+  crearAuto(patente, marca, modelo, capacidad) {
     this.maxauto();
-    return this.database.executeSql('INSERT OR IGNORE INTO auto VALUES (?, ?, ?, ?, ?, ?);',data).then(res => {
+    let data = [this.idAuto, patente, marca, modelo, capacidad, this.usuarioActual.value[0].idUsuario];
+    return this.database.executeSql('INSERT OR IGNORE INTO auto VALUES (?, ?, ?, ?, ?, ?);', data).then(res => {
       this.buscarAuto();
-      this.presentAlert('XDXDXDD','XDXDXD');
+      this.presentAlert('XDXDXDD', 'CREAR AUTO');
     }).catch(e => {
       this.presentAlert(e, "QUE PASA");
-  })
+    })
   }
 
-  maxviaje(){
-    return this.database.executeSql('SELECT MAX(id_viaje)+1 FROM viaje;').then(res => {
-      
+  maxviaje() {
+    return this.database.executeSql('SELECT MAX(id_viaje) FROM viaje;', []).then(res => {
+
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++) {
 
-            this.idViaje= res.rows.item(i).id_viaje
-          this.presentAlert("ola", "ola");
+          this.idViaje = res.rows.item(i).id_viaje + 1
+          
 
         }
+      this.presentAlert("TODOVIEN", "maxviaje");
+      }
+
+    }).catch(e => {
+      this.presentAlert(e, "maxviaje");
+    });
+
+  }
+  maxauto() {
+    return this.database.executeSql('SELECT MAX(id_auto) FROM auto;', []).then(res => {
+
+      if (res.rows.length > 0) {
+        for (var i = 0; i < res.rows.length; i++) {
+
+          this.idAuto = res.rows.item(i).id_auto + 1
+          
+
+        }
+      this.presentAlert("TODOVIEN", "maxauto");
       }
 
     });
 
   }
-  maxauto(){
-    return this.database.executeSql('SELECT MAX(id_auto)+1 FROM auto;').then(res => {
-      
-      if (res.rows.length > 0) {
-        for (var i = 0; i < res.rows.length; i++) {
 
-            this.idAuto= res.rows.item(i).id_auto
-          this.presentAlert("ola", "ola");
-
-        }
-      }
-
-    });
-
-  }
-
-  fkauto(){
+  verfkauto() {
     let data = [this.usuarioActual.value[0].idUsuario];
-    return this.database.executeSql('SELECT id_auto FROM auto where fk_id_cliente=?;',data).then(res => {
-      
+    return this.database.executeSql('SELECT id_auto FROM auto where fk_id_usuario=?;', data).then(res => {
+
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++) {
 
-            this.fkAuto= res.rows.item(i).fk_id_auto
-          this.presentAlert("ola", "ola");
+          this.fkAuto = res.rows.item(i).id_auto
 
-        }
+
+        }     
+      this.presentAlert("TODOBIEN", "FKAUTO");
       }
 
+
+    }).catch(e => {
+      this.presentAlert(e, "fkauto");
     });
 
   }
 
-  viajeActual(){
-    let data = [];
-    this.database.executeSql('SELECT * FROM viaje WHERE idConductor = ? OR ;', data).then(res => {
-      if (res.rows.length > 0){
-        //xdxdxd
+  verViajeActual() {
+    let data = [this.usuarioActual.value[0].idUsuario, this.usuarioActual.value[0].idUsuario];
+    this.database.executeSql('SELECT v.id_viaje FROM viaje v INNER JOIN usuarioviaje u ON v.id_viaje = u.id_viaje WHERE v.id_conductor = ? OR v.id_usuario = ? and v.estado = true;', data).then(res => {
+      if (res.rows.length > 0) {
+        for (var i = 0; i < res.rows.length; i++){
+          this.viajeActual = res.rows.item(i).id_viaje;
+        } 
       }
+    }).catch(e => {
+      console.log('Error verViajeActual: ' + e);
     });
   }
 
