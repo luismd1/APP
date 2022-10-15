@@ -7,6 +7,7 @@ import { Viaje } from './viaje';
 import { Auto } from './auto';
 import { Router } from '@angular/router';
 import { Usuarioviaje } from './usuarioviaje';
+import { ApiService } from '../services/api.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -24,6 +25,7 @@ export class DbservicioService {
   insertAuto = "INSERT OR IGNORE INTO auto VALUES (1, 'AABB11', 'Chevrolet', 'Camaro', 5, 1);";
   insertViaje = "INSERT OR IGNORE INTO viaje VALUES (1, 1, 'Valle grande,Psje Rio maule', '10/07/2022', '08:20', 4, 5000,1, false);";
   insertViaje2 = "INSERT OR IGNORE INTO viaje VALUES (2, 1, 'Quilicura,Las torres', '2022-09-29', '08:20', 4, 5000,1, false);";
+  insertUsuarioViaje = "INSERT OR IGNORE INTO usuarioviaje VALUES(1,1,1)";
   //insertDescuento = "INSERT OR IGNORE INTO descuento(id_desc, codigo, descuento, estado) VALUES (1, '1b3', 0.5, 1);";
 
 
@@ -42,7 +44,7 @@ export class DbservicioService {
   listaUsuarios = new BehaviorSubject([]);
   listaUsuariosviajes = new BehaviorSubject([]);
   //observable para el viaje actual
-  viajeActual : BehaviorSubject<number> = new BehaviorSubject(null);
+  viajeActual = new BehaviorSubject([]);
   //observable para validar si la BD esta disponible o no
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -53,7 +55,10 @@ export class DbservicioService {
   idAuto: number;
   fkAuto: number;
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private toastController: ToastController, private router: Router) {
+  //autos que vendran desde el json del profe
+  autos : any = []
+
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private toastController: ToastController, private router: Router,private api : ApiService) {
     this.crearBD();
   }
 
@@ -110,6 +115,7 @@ export class DbservicioService {
       await this.database.executeSql(this.insertAuto, []);
       await this.database.executeSql(this.insertViaje, []);
       await this.database.executeSql(this.insertViaje2, []);
+      await this.database.executeSql(this.insertUsuarioViaje, []);
       //await this.database.executeSql(this.insertDescuento, []);
       //puedo mostrar mensaje de tablas creadas
       this.presentAlert("Tablas Creadas", "Creación de Tablas");
@@ -145,7 +151,7 @@ export class DbservicioService {
   fetchUsuarioViaje(): Observable<Usuarioviaje[]> {
     return this.listaUsuariosviajes.asObservable();
   }
-  fetchViajeActual(){
+  fetchViajeActual(): Observable<Viaje[]>{
     return this.viajeActual.asObservable();
   }
 
@@ -219,7 +225,7 @@ export class DbservicioService {
   }
   buscarViajePorUsuario() {
     let data = [this.usuarioActual.value[0].idUsuario];
-    return this.database.executeSql('SELECT v.destino,v.fecha,v.hora,v.costo,v.estado FROM viaje v INNER JOIN usuarioviaje uv ON v.id_viaje = uv.fk_id_viaje  INNER JOIN usuario u ON u.id_usuario = uv.fk_id_usuario  WHERE u.id_usuario = ?;', data).then(res => {
+    return this.database.executeSql('SELECT v.destino,v.fecha,v.hora,v.costo FROM viaje v  INNER JOIN usuarioviaje uv ON v.id_viaje = uv.fk_id_viaje  INNER JOIN usuario u ON u.id_usuario = pk_id_usuario  WHERE id_usuario = ?;', data).then(res => {
       let items: Usuarioviaje[] = [];
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++) {
@@ -353,25 +359,45 @@ export class DbservicioService {
   }
 
   verViajeActual() {
-    let items = [];
+    let items : Viaje[] = [];
     let data = [this.usuarioActual.value[0].idUsuario, this.usuarioActual.value[0].idUsuario];
-    this.database.executeSql('SELECT v.id_viaje, v.destino, v.fecha, v.hora, v.costo FROM viaje v INNER JOIN usuarioviaje u ON v.id_viaje = u.id_viaje WHERE v.id_conductor = ? OR v.id_usuario = ? and v.estado = true;', data).then(res => {
+    this.database.executeSql('SELECT v.id_viaje, v.id_conductor, v.destino, v.fecha, v.hora, v.pasajeros, v.costo, v.estado FROM viaje v JOIN usuarioviaje u ON v.id_viaje = u.fk_id_viaje WHERE v.id_conductor = ? OR u.fk_id_usuario = ? AND v.estado = true;', data).then(res => {
       if (res.rows.length > 0) {
         for (var i = 0; i < res.rows.length; i++){
           items.push({
-            id_viaje : res.rows.item(i).id_viaje,
+            idViaje : res.rows.item(i).id_viaje,
+            id_conductor : res.rows.item(i).id_conductor,
             destino : res.rows.item(i).destino,
             fecha : res.rows.item(i).fecha,
             hora : res.rows.item(i).hora,
-            costo : res.rows.item(i).costo
-          }); 
+            pasajeros : res.rows.item(i).pasajeros,
+            costo : res.rows.item(i).costo,
+            estado : res.rows.item(i).estado,
+            fk_id_auto : res.rows.item(i).fk_id_auto
+          });
         } 
-        console.log('todo bien todo correcto');  
+        console.log("todo bien todo correcto  " + items);  
+        this.viajeActual.next(items);
       }
     }).catch(e => {
       console.log('Error verViajeActual: ' + e);
     });
   }
 
+  auto1Json(){
+    let data = [this.autos.patente,this.autos.marca,this.autos.id_usuario];
+    this.database.executeSql('INSERT OR IGNORE INTO auto VALUES (1, ?, ?, "A4 45 quattro", 4, ?);',data).then(res=>{
+      this.buscarAuto();
+      this.presentAlert('bien', 'auto1json');
+    }).catch(e => {
+      this.presentAlert('mal', 'auto1json');
+    })
+  }
+
+//  ngOnInit() {
+//    this.api.getAutos().subscribe((res)=>{
+//      this.autos = res;
+//    });
+//  }
 
 }

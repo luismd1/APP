@@ -9,6 +9,7 @@ import { DbservicioService } from 'src/app/services/dbservicios.service';
   styleUrls: ['./perfil-historial.component.scss'],
 })
 export class PerfilHistorialComponent implements OnInit {
+  usuarioviaje : boolean;
   listaUsuariosviajes: any = [
     {
       destino: '',
@@ -55,21 +56,26 @@ export class PerfilHistorialComponent implements OnInit {
   //  },
   //]
 
-  constructor(private modalCtrl : ModalController,private conexion : DbservicioService, private router : Router,
-     private toastController : ToastController, private activedRoute : ActivatedRoute) {
+  constructor(private modalCtrl : ModalController,private conexion : DbservicioService, private router : Router,private toastController : ToastController, private activedRoute : ActivatedRoute) {
     conexion. buscarViajePorUsuario();
   }
-
+  verusuarioviaje(){
+    if(this.listaUsuariosviajes.length > 0){
+      this.usuarioviaje = true;
+    }else{
+      this.usuarioviaje = false;
+    }
+    console.log('ESTO ES LO QUE ME LLEGA CTM D:' + this.listaUsuariosviajes);
+  }
   ngOnInit() {
-    //me subscribo al servicio
-    this.conexion.dbState().subscribe((res)=>{
-      if(res){
-        //subscribo a los cambios en las consultas de BD
-        this.conexion.fetchUsuarioViaje().subscribe(item=>{
-          this.listaUsuariosviajes = item;
-        })
+    this.conexion.fetchUsuarioViaje().subscribe(item => {
+      if(item){
+        this.listaUsuariosviajes = item;
+        this.verusuarioviaje();
+      }else{
+        console.log("No llega nada aca");
       }
-    })
+    });
   }
 
 }

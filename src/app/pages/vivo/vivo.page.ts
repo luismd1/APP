@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DbservicioService } from 'src/app/services/dbservicios.service';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
+import { GooglemapsComponent } from 'src/app/googlemaps/googlemaps.component';
 
 @Component({
   selector: 'app-vivo',
@@ -10,16 +11,22 @@ import { ToastController } from '@ionic/angular';
 })
 export class VivoPage implements OnInit {
 
-  viajeActual : any;
+  viajeActual : any = [];
   actual : boolean;
 
-  constructor(private conexionBD : DbservicioService, private toastController : ToastController, private router : Router) {
+  constructor(private conexionBD : DbservicioService, private toastController : ToastController, private router : Router, private modalController : ModalController) {
     conexionBD.verViajeActual();
-    this.verActual();
   }
 
-  mapa(){
-    this.router.navigate(['/mapa']);
+  async mapa(){
+    const ubicacion = this.viajeActual[0].destino;
+
+    const modalAdd = await this.modalController.create({
+      component : GooglemapsComponent,
+      swipeToClose : true,
+      componentProps : {}
+    });
+    await modalAdd.present();
   }
 
   cancelar(){
@@ -27,11 +34,12 @@ export class VivoPage implements OnInit {
   }
 
   verActual(){
-    if(this.viajeActual > 0){
+    if(this.viajeActual.length > 0){
       this.actual = true;
     }else{
       this.actual = false;
     }
+    console.log('ESTO ES LO QUE ME LLEGA CTM D:' + this.viajeActual);
   }
 
   async mensaje(texto) {
@@ -43,11 +51,12 @@ export class VivoPage implements OnInit {
   }
 
   ngOnInit() {
-    this.conexionBD.dbState().subscribe((res) => {
-      if(res){
-        this.conexionBD.fetchViajeActual().subscribe(item => {
-          this.viajeActual = item;
-        });
+    this.conexionBD.fetchViajeActual().subscribe(item => {
+      if(item){
+        this.viajeActual = item;
+        this.verActual();
+      }else{
+        console.log("No llega nada aca");
       }
     });
   }
