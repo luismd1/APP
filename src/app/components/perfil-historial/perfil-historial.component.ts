@@ -68,10 +68,11 @@ export class PerfilHistorialComponent implements OnInit {
     console.log('ESTO ES LO QUE ME LLEGA CTM D:' + this.listaUsuariosviajes);
   }
   ngOnInit() {
-    this.conexion.fetchUsuarioViaje().subscribe(item => {
+    this.conexion.fetchviajeporusuario().subscribe(item => {
       if(item){
         this.listaUsuariosviajes = item;
         this.verusuarioviaje();
+        console.log("Esto llega al ngoninit"+ this.listaUsuariosviajes);
       }else{
         console.log("No llega nada aca");
       }

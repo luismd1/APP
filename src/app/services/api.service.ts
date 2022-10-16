@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { retry, catchError } from 'rxjs/Operators'
+import { retry } from 'rxjs/Operators'
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,8 +16,8 @@ export class ApiService {
     })
   }
 
-  apiURL = 'https://my-json-server.typicode.com/victorrosendo/repoListadoAutos/autos'
-  api2URL = '  https://my-json-server.typicode.com/victorrosendo/repoUsuariosRamos/users'
+  apiURL = 'https://my-json-server.typicode.com/victorrosendo/repoListadoAutos/autos/'
+  api2URL = 'http://my-json-server.typicode.com/victorrosendo/repoUsuariosRamos/users/'
 
 
   constructor(private http : HttpClient) {
@@ -25,13 +25,13 @@ export class ApiService {
   }
 
   getAutos() : Observable<any>{
-    return this.http.get(this.apiURL+'/autos/').pipe(
-      retry(2)
+    return this.http.get(this.apiURL).pipe(
+      retry(3)
     );
   }
 
   getUsers() : Observable<any>{
-    return this.http.get(this.apiURL+'/users/').pipe(
+    return this.http.get(this.api2URL).pipe(
       retry(3)
     );
   }

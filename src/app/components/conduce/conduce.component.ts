@@ -9,6 +9,21 @@ import { DbservicioService } from 'src/app/services/dbservicios.service';
   styleUrls: ['./conduce.component.scss'],
 })
 export class ConduceComponent implements OnInit {
+  
+  listaauto: any = [
+    {
+      idAuto : '',
+      patente: '',
+      marca: '',
+      modelo: '',
+      capacidad: '',
+      estado: '',
+      fk_id_usuario: ''
+    }
+  ];
+
+
+
 
   // Datos del auto
   auto : boolean = false; // Booleano que comprueba si es que el auto existe
@@ -31,6 +46,10 @@ export class ConduceComponent implements OnInit {
   constructor(private toastController : ToastController, private router : Router, private conexion : DbservicioService) { }
   
 
+  updateAuto(){
+    this.conexion.updAuto(this.patente, this.marca, this.modelo, this.capacidad);
+    this.conexion.presentAlert("Ahora puede ingresar un viaje ", "Auto actualizado con éxito");
+  }
 
   guardarAuto(){
     if(true){
@@ -88,6 +107,14 @@ export class ConduceComponent implements OnInit {
     //toast.present();
   //}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.conexion.dbState().subscribe((res) => {
+      if(res){
+        this.conexion.fetchEstadoAuto().subscribe(item => {
+          this.listaauto = item;
+        });
+      }
+    });
+  }
 
 }

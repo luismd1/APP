@@ -9,10 +9,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { ModalComponent } from './components/modal/modal.component';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { Camera } from '@awesome-cordova-plugins/camera/ngx';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, ModalComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, SQLite, Camera, Geolocation],
   bootstrap: [AppComponent],
 })

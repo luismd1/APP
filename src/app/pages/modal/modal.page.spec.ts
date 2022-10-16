@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { GooglemapsComponent } from './googlemaps.component';
+import { ModalPage } from './modal.page';
 
-describe('GooglemapsComponent', () => {
-  let component: GooglemapsComponent;
-  let fixture: ComponentFixture<GooglemapsComponent>;
+describe('ModalPage', () => {
+  let component: ModalPage;
+  let fixture: ComponentFixture<ModalPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ GooglemapsComponent ],
+      declarations: [ ModalPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GooglemapsComponent);
+    fixture = TestBed.createComponent(ModalPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

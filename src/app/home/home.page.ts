@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { BorrarService } from '../services/borrarbd/borrar.service';
 import { DbservicioService } from '../services/dbservicios.service';
@@ -9,7 +9,7 @@ import { DbservicioService } from '../services/dbservicios.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
   usu : string = "";
   pass : string = "";
   listaUsu : any = [

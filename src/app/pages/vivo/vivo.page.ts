@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { DbservicioService } from 'src/app/services/dbservicios.service';
 import { Router } from '@angular/router';
 import { ModalController, ToastController } from '@ionic/angular';
-import { GooglemapsComponent } from 'src/app/googlemaps/googlemaps.component';
 
 @Component({
   selector: 'app-vivo',
@@ -18,15 +17,8 @@ export class VivoPage implements OnInit {
     conexionBD.verViajeActual();
   }
 
-  async mapa(){
-    const ubicacion = this.viajeActual[0].destino;
-
-    const modalAdd = await this.modalController.create({
-      component : GooglemapsComponent,
-      swipeToClose : true,
-      componentProps : {}
-    });
-    await modalAdd.present();
+  mapa(){
+    this.router.navigate(['/maps']);
   }
 
   cancelar(){

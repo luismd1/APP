@@ -61,7 +61,7 @@ export class ViajarComponent implements OnInit {
 
 
 
-  constructor(private modalCtrl : ModalController,private conexion : DbservicioService, private router : Router, private toastController : ToastController, private activedRoute : ActivatedRoute) {
+  constructor(private modalCtrl : ModalController,private conexion : DbservicioService, private router : Router, private toastController : ToastController) {
     conexion.buscarViajes();
   }
 
@@ -89,8 +89,9 @@ export class ViajarComponent implements OnInit {
     const { data ,role } = await modal.onWillDismiss();
 
     if (role === 'confirm'){
-
-      this.mensaje('Viaje reservado');}
+      this.conexion.agregarPasajero(this.listaViajes[idViaje-1].idViaje);
+      this.mensaje('Viaje reservado');
+    }
   }
 
   async mensaje(texto) {
