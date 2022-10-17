@@ -51,7 +51,6 @@ export class PerfilPage implements OnInit {
 
   }
 
-
   ngOnInit() {
   }
 

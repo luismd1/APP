@@ -10,18 +10,8 @@ import { DbservicioService } from 'src/app/services/dbservicios.service';
 })
 export class ConduceComponent implements OnInit {
   
-  listaauto: any = [
-    {
-      idAuto : '',
-      patente: '',
-      marca: '',
-      modelo: '',
-      capacidad: '',
-      estado: '',
-      fk_id_usuario: ''
-    }
-  ];
-
+  listaAutos : any = [];
+  viajeActual : any = [];
 
 
 
@@ -30,30 +20,38 @@ export class ConduceComponent implements OnInit {
   patente :  "";
   marca :  "";
   modelo : "";
-  capacidad: "0";
-  fk_id_usuario =1;
+  autoSeleccionado : number;
+
 
   // Datos del viaje
   id_auto = 1;
-  destino : "";
+  destino : string = "";
   fecha : "";
   hora : "";
-  pasajeros : "0";
-  costo : "";  
+  pasajeros : number;
+  costo : number;  
 
   fk_id_auto = 1;
 
-  constructor(private toastController : ToastController, private router : Router, private conexion : DbservicioService) { }
+  constructor(private toastController : ToastController, private router : Router, private conexion : DbservicioService) {
+    conexion.ListaAuto();
+    conexion.verViajeActual();
+  }
   
 
-  updateAuto(){
-    this.conexion.updAuto(this.patente, this.marca, this.modelo, this.capacidad);
-    this.conexion.presentAlert("Ahora puede ingresar un viaje ", "Auto actualizado con éxito");
+  verAuto(){
+    if (this.listaAutos.length > 0){
+      console.log('Lista autos:' + this.listaAutos);
+      this.auto = true;
+    } else {
+      this.auto = false;
+      console.log('Error:' + this.listaAutos);
+    }
   }
 
   guardarAuto(){
-    if(true){
-      this.conexion.crearAuto(this.patente, this.marca, this.modelo, this.capacidad);
+    if(this.patente.length == 6 && this.marca.length > 2 && this.modelo.length > 2){
+      this.conexion.crearAuto(this.patente, this.marca, this.modelo);
       this.auto = true;
       this.conexion.presentAlert("Ahora puede ingresar un viaje ", "Auto guardado con éxito");
     }else{
@@ -61,57 +59,39 @@ export class ConduceComponent implements OnInit {
     }
   }
   guardarViaje(){
-    if(true){
-      this.conexion.crearViaje(this.destino, this.fecha, this.hora, this.pasajeros, this.costo);  
-      this.conexion.presentAlert("Ahora los usuarios podrán verlo en la sección de viajes ", "viaje agregado");
-      this.router.navigate(['/inicio/viajar']);
+    if(this.destino.length > 5 && this.fecha != null && this.hora != null && this.pasajeros > 1 && this.costo > 0 && this.autoSeleccionado != null){
+      if (this.viajeActual.length > 0){
+        this.mensaje('Ya tienes un viaje activo, cancelalo para crear uno.');
+      } else {
+        this.conexion.crearViaje(this.destino, this.fecha, this.hora, this.pasajeros, this.costo, this.autoSeleccionado); 
+        this.mensaje('Viaje agregado 😎');
+        this.router.navigate(['/inicio/viajar']);
+      }
     }else{
       this.conexion.presentAlert("Error al guardar el viaje", "Compruebe los datos");
     }
   }
 
+  async mensaje(texto) {
+    const toast = await this.toastController.create({
+      message: texto,
+      duration: 2000
+    });
+    toast.present();
+  }
 
-  //regAuto(){
-   // if(this.patente.length == 6 && this.marca.length > 2 && this.modelo.length > 2 && this.capacidad > 1){
-    //  this.mensaje('Auto registrado con exito :D');
-    //  this.auto = true;
-    //}else{
-     // this.mensaje('Datos incorrectos intentelo nuevamente D:')
-    //}
-  //}
-
-  //regviaje(){
-   // if(this.destino.length > 4 && this.pasajeros > 0 && this.fecha != null && this.hora != null){
-    //  this.mensaje('Viaje registrado con exito :D');
-    //  let navigationExtras : NavigationExtras = {
-     //   state : {
-      //    id : 5,
-       //   destino : this.destino,
-        //  fecha : this.fecha,
-         // hora : this.hora,
-          //pasajeros : this.pasajeros,
-          //costo : this.costo
-        //}
-      //}
-      //this.router.navigate(['inicio/viajar'], navigationExtras);
-    //}else{
-      //this.mensaje('Datos incorrectos intentelo de nuevo D:');
-    //}
-  //}
-
-  //async mensaje(texto) {
-   // const toast = await this.toastController.create({
-    //  message: texto,
-    //  duration: 2000
-    //});
-    //toast.present();
-  //}
+  ionViewDidLoad(){
+  }
 
   ngOnInit() {
     this.conexion.dbState().subscribe((res) => {
       if(res){
-        this.conexion.fetchEstadoAuto().subscribe(item => {
-          this.listaauto = item;
+        this.conexion.fetchAutoUsu().subscribe(item => {
+          this.listaAutos = item;
+          this.verAuto();
+        });
+        this.conexion.fetchViajeActual().subscribe(item => {
+          this.viajeActual = item;
         });
       }
     });

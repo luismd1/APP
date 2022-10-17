@@ -1,9 +1,18 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>maps</ion-title>
+    <ion-title>Google maps</ion-title>
   </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="Volver" icon="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+    <button (click)="locate() " slot ="end"  class="location" >  Obtener localizacion </button>
+  </ion-toolbar>
+
 </ion-header>
 
   <div class="container">
     <capacitor-google-map #map id="map"></capacitor-google-map>
+
   </div>

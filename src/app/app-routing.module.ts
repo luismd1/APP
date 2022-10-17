@@ -36,14 +36,19 @@ const routes: Routes = [
     loadChildren: () => import('./pages/maps/maps.module').then( m => m.MapsPageModule)
   },
   {
-    path: 'modal',
-    loadChildren: () => import('./pages/modal/modal.module').then( m => m.ModalPageModule)
+    path: 'nuevoauto',
+    loadChildren: () => import('./pages/nuevoauto/nuevoauto.module').then( m => m.NuevoautoPageModule)
+  },
+  {
+    path: 'eliminarauto',
+    loadChildren: () => import('./pages/eliminarauto/eliminarauto.module').then( m => m.EliminarautoPageModule)
   },
   {
     /* Not Found */
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
+
 
 
 

@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ModalPageRoutingModule } from './modal-routing.module';
+import { NuevoautoPageRoutingModule } from './nuevoauto-routing.module';
 
-import { ModalPage } from './modal.page';
+import { NuevoautoPage } from './nuevoauto.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ModalPageRoutingModule
+    NuevoautoPageRoutingModule
   ],
-  declarations: [ModalPage]
+  declarations: [NuevoautoPage]
 })
-export class ModalPageModule {}
+export class NuevoautoPageModule {}

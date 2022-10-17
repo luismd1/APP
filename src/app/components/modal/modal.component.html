@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-button (click)="cancel()">Cancelar</ion-button>
         </ion-buttons>
-        <ion-title>{{ destino }}</ion-title>
+        <ion-title></ion-title>
         <ion-buttons slot="end">
             <ion-button (click)="confirm()" [strong]="true">Confirmar</ion-button>
         </ion-buttons>
@@ -25,6 +25,13 @@
         </ion-item>
         <ion-item>
             <ion-label>Costo por persona: {{ costo }}</ion-label>
+        </ion-item>
+        <ion-item>
+            <ion-label>Estado: {{ estado }}</ion-label>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Codigo de descuento</ion-label>
+            <ion-input [(ngModel)]="codigo" type="text" placeholder="Ej: ElRubiusOMG"></ion-input>
         </ion-item>
     </ion-list>
 </ion-content>

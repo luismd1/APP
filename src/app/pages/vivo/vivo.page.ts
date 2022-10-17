@@ -22,7 +22,8 @@ export class VivoPage implements OnInit {
   }
 
   cancelar(){
-    this.mensaje('Viaje cancelado');
+    this.conexionBD.verRol();
+    this.conexionBD.cancelarViaje();
   }
 
   verActual(){

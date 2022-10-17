@@ -37,6 +37,13 @@ export class PerfilConfigComponent implements OnInit {
     this.router.navigate(['/clave-olvidada'], navigationExtras);
   }
 
+  nuevoAuto(){
+    this.router.navigate(['/nuevoauto']);
+  }
+
+  eliminarAuto(){
+    this.router.navigate(['/eliminarauto']);
+  }
   ngOnInit() {}
 
 }

@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -8,16 +10,18 @@ import { ModalController } from '@ionic/angular';
 })
 export class ModalComponent implements OnInit {
 
-  constructor(private modalCtrl : ModalController) { }
+  codigo: "";
+
+  constructor(private modalCtrl: ModalController) { }
 
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  confirm(id) {
-    return this.modalCtrl.dismiss(id, 'confirm');
+  confirm() {
+    return this.modalCtrl.dismiss(this.codigo, 'confirm');
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
 }

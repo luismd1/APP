@@ -34,13 +34,16 @@
               <ion-col size="12">
 
                 <ion-item>
-                  <h5> correo:  </h5>
+                  <h5> correo: {{ listaDatos[0].correo }}</h5>
                 </ion-item>
               
               </ion-col>
             </ion-row>
-
-
+            <ion-row>
+              <ion-item>
+                <ion-button (click)="borrar()">Eliminar foto</ion-button>
+              </ion-item>
+            </ion-row>
         </ion-grid>
       </ion-item>
 

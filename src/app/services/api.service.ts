@@ -17,7 +17,7 @@ export class ApiService {
   }
 
   apiURL = 'https://my-json-server.typicode.com/victorrosendo/repoListadoAutos/autos/'
-  api2URL = 'http://my-json-server.typicode.com/victorrosendo/repoUsuariosRamos/users/'
+  api2URL = 'http://my-json-server.typicode.com/victorrosendo/repoUsuariosRamos/users'
 
 
   constructor(private http : HttpClient) {
