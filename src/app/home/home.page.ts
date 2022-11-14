@@ -29,12 +29,7 @@ export class HomePage implements OnInit {
   }
 
   claveOlvidada(){
-    let navigationExtras : NavigationExtras = {
-      state : {
-        usuario : this.usu
-      }
-    }
-    this.router.navigate(['/clave-olvidada'], navigationExtras);
+    this.router.navigate(['/clave-olvidada']);
   }
 
   iniciar(){

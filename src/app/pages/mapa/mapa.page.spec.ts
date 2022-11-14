@@ -1,24 +1,24 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+// import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+// import { IonicModule } from '@ionic/angular';
 
-import { MapaPage } from './mapa.page';
+// import { MapaPage } from './mapa.page';
 
-describe('MapaPage', () => {
-  let component: MapaPage;
-  let fixture: ComponentFixture<MapaPage>;
+// describe('MapaPage', () => {
+//   let component: MapaPage;
+//   let fixture: ComponentFixture<MapaPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MapaPage ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+//   beforeEach(waitForAsync(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ MapaPage ],
+//       imports: [IonicModule.forRoot()]
+//     }).compileComponents();
 
-    fixture = TestBed.createComponent(MapaPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+//     fixture = TestBed.createComponent(MapaPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

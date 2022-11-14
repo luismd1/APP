@@ -1,24 +1,24 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+// import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+// import { IonicModule } from '@ionic/angular';
 
-import { EliminarautoPage } from './eliminarauto.page';
+// import { EliminarautoPage } from './eliminarauto.page';
 
-describe('EliminarautoPage', () => {
-  let component: EliminarautoPage;
-  let fixture: ComponentFixture<EliminarautoPage>;
+// describe('EliminarautoPage', () => {
+//   let component: EliminarautoPage;
+//   let fixture: ComponentFixture<EliminarautoPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EliminarautoPage ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+//   beforeEach(waitForAsync(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ EliminarautoPage ],
+//       imports: [IonicModule.forRoot()]
+//     }).compileComponents();
 
-    fixture = TestBed.createComponent(EliminarautoPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+//     fixture = TestBed.createComponent(EliminarautoPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });
