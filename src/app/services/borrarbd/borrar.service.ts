@@ -9,6 +9,12 @@ export class BorrarService {
 
   public database: SQLiteObject;
 
+  borraUsu = 'DROP TABLE usuario;';
+  borrarAuto = 'DROP TABLE auto;';
+  borrarViaje = 'DROP TABLE viaje;';
+  borrarDescuento = 'DROP TABLE descuento;';
+  borrarUsuViaje = 'DROP TABLE usuarioviaje;';
+
   constructor(private sqlite: SQLite, private platform: Platform, private toastController: ToastController,private alertController: AlertController) {
     this.crearBD();
   }
@@ -24,11 +30,11 @@ export class BorrarService {
   }
 
   borrarBD(){
-    this.database.executeSql('DROP TABLE usuario;', []);
-    this.database.executeSql('DROP TABLE auto;', []);
-    this.database.executeSql('DROP TABLE viaje;', []);
-    this.database.executeSql('DROP TABLE descuento;', []);
-    this.database.executeSql('DROP TABLE usuarioviaje;', []);
+    this.database.executeSql(this.borraUsu, []);
+    this.database.executeSql(this.borrarAuto, []);
+    this.database.executeSql(this.borrarViaje, []);
+    this.database.executeSql(this.borrarDescuento, []);
+    this.database.executeSql(this.borrarUsuViaje, []);
   }
 
   crearBD() {

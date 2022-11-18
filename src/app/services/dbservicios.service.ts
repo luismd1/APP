@@ -100,11 +100,6 @@ export class DbservicioService implements OnInit {
     });
     toast.present();
   }
-
-  mensajesError(){
-    this.mensaje('Esto es un mensaje de prueba');
-  }
-
   //método para crear la base de datos
   crearBD() {
     //validación de la plataforma

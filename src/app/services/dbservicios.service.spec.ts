@@ -19,7 +19,27 @@ describe('DbserviciosService', () => {
   //   expect(service).toBeTruthy();
   // });
 
-  it('Mensaje de error', ()=>{
-    service.mensajesError();
+  it('Verificar inserts', ()=>{
+    expect(service.insertAuto).toContain('INSERT');
+    expect(service.insertDescuento).toContain('INSERT');
+    expect(service.insertDescuento2).toContain('INSERT');
+    expect(service.insertDescuento3).toContain('INSERT');
+    expect(service.insertUsuarioViaje).toContain('INSERT');
+    expect(service.insertViaje).toContain('INSERT');
   });
+
+  it('Prueba NativeStorage', () => {
+    let foto : any;
+
+    localStorage.setItem('xd','XD');
+
+    foto = localStorage.getItem('xd');
+    expect(foto).toEqual('XD');
+
+    localStorage.removeItem('xd');
+    foto = localStorage.getItem('xd');    
+    expect(foto).toBeNull();
+  });
+
+  
 });

@@ -24,10 +24,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
   },
   {
-    path: 'mapa',
-    loadChildren: () => import('./pages/mapa/mapa.module').then( m => m.MapaPageModule)
-  },
-  {
     path: 'vivo',
     loadChildren: () => import('./pages/vivo/vivo.module').then( m => m.VivoPageModule)
   },

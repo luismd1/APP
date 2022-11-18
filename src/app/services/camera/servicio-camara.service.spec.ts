@@ -19,8 +19,7 @@ describe('ServicioCamaraService', () => {
   //   expect(service).toBeTruthy();
   // });
 
-  it('tomar foto', () => {
-    service.tomarFoto();
+  it('Definicion de variables', () => {
     expect(service.foto).toBeDefined();
   });
 });

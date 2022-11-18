@@ -30,7 +30,7 @@ export class ApiService {
     );
   }
 
-  getUsers() : Observable<any>{
+  getUsers(){
     return this.http.get(this.api2URL).pipe(
       retry(3)
     );

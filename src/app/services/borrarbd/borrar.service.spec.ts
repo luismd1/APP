@@ -19,7 +19,11 @@ describe('BorrarService', () => {
   //   expect(service).toBeTruthy();
   // });
 
-  it('BD Borrada', () => {
-    service.presentAlert('Test','BD borrada');
+  it('Verificar el borrar', () => {
+    expect(service.borraUsu).toContain('DROP');
+    expect(service.borrarAuto).toContain('DROP');
+    expect(service.borrarDescuento).toContain('DROP');
+    expect(service.borrarViaje).toContain('DROP');
+    expect(service.borrarUsuViaje).toContain('DROP');
   });
 });
