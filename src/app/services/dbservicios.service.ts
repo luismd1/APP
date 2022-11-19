@@ -33,12 +33,6 @@ export class DbservicioService implements OnInit {
   insertDescuento3 = "INSERT OR IGNORE INTO descuento(id_desc, codigo, descuento, estado) VALUES (1, 'RaidenLine', 1, 1);";
 
 
-
-
-
-
-  // FALTA ESTA TABLA
-  // FALTA HACER LA RELACION ENTRE LAS TABLAS 
   tablaUsuarioViaje = "CREATE TABLE IF NOT EXISTS usuarioviaje (fk_id_usuario INTEGER,fk_id_viaje INTEGER, rol VARCHAR(255), precio INTEGER NOT NULL, FOREIGN KEY (fk_id_usuario) REFERENCES usuario(id_usuario),FOREIGN KEY (fk_id_viaje) REFERENCES viaje(id_viaje))";
 
 
@@ -73,12 +67,12 @@ export class DbservicioService implements OnInit {
   rol: string;
 
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private toastController: ToastController, private router: Router, private json: ApiService) {
-    this.json.getUsers().subscribe((res) => {
-      this.users = res;
-    });
-    this.json.getAutos().subscribe((res) => {
-      this.autos = res;
-    });
+    // this.json.getUsers().subscribe((res) => {
+    //   this.users = res;
+    // });
+    // this.json.getAutos().subscribe((res) => {
+    //   this.autos = res;
+    // });
     this.crearBD();
   }
 
@@ -130,14 +124,9 @@ export class DbservicioService implements OnInit {
       await this.database.executeSql(this.tablaDescuento, []);
       await this.database.executeSql(this.tablaUsuarioViaje, []);
       //INSERT'S A LAS TABLAS
-      this.JSONusu();
-      this.JSONauto();
-      await this.database.executeSql(this.insertViaje, []);
-      //await this.database.executeSql(this.insertViaje2, []);
-      await this.database.executeSql(this.insertUsuarioViaje, []);
-      await this.database.executeSql(this.insertDescuento, []);
-      await this.database.executeSql(this.insertDescuento2, []);
-      await this.database.executeSql(this.insertDescuento3, []);
+      //this.JSONusu();
+      //this.JSONauto();
+
       //puedo mostrar mensaje de tablas creadas
       console.log("Tablas Creadas Creación de Tablas");
       //llamar a metodo para traer todos los registros de la tabla
@@ -485,6 +474,26 @@ export class DbservicioService implements OnInit {
     }
   }
 
+  //id_usuario,correo,contrasena
+
+  registrarUsuario(id_usuario,correo,contrasena) {
+    let data = [id_usuario, correo, contrasena];
+    return this.database.executeSql('INSERT or IGNORE INTO usuario VALUES (?,?,?)', data).then(data2 => {
+      this.buscarUsuario();
+      console.log("json usuario bien")
+    })
+  }
+
+  //id_auto,patente,marca,modelo,estado,fk_id_usuario
+
+  registrarAuto(patente,marca,fk_id_usuario) {
+    let data = [patente,marca,fk_id_usuario];
+    return this.database.executeSql('INSERT or IGNORE INTO auto VALUES (?,?,?, "modelo",true, ?)', data).then(data2 => {
+      this.buscarAuto();
+      console.log("json auto bien")
+    })
+  }
+
   JSONauto() {
     for (var i = 0; i < this.autos.length; i++) {
       let data = [i + 1, this.autos[i].patente, this.autos[i].marca, this.autos[i].id_usuario];
@@ -560,6 +569,15 @@ export class DbservicioService implements OnInit {
         this.listaDescuento.next(items);
       }
     })
+  }
+
+  inserttablas(){
+    this.database.executeSql(this.insertViaje, []);
+    //await this.database.executeSql(this.insertViaje2, []);
+    this.database.executeSql(this.insertUsuarioViaje, []);
+    this.database.executeSql(this.insertDescuento, []);
+    this.database.executeSql(this.insertDescuento2, []);
+    this.database.executeSql(this.insertDescuento3, []);
   }
 
   ngOnInit() {

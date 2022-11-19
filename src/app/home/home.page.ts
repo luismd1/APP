@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { ApiService } from '../services/api.service';
 import { BorrarService } from '../services/borrarbd/borrar.service';
 import { DbservicioService } from '../services/dbservicios.service';
 
@@ -20,11 +21,23 @@ export class HomePage implements OnInit {
     }
   ];
 
+  usuarios: any[]=[{
+    id: '',
+    nombre:'',
+    clave:''
+  }];
+
+  autos : any[]=[{
+    patente: '',
+    marca: '',
+    id_usuario: ''
+  }];
+
   item : any = {
     imagen : "assets/imgs/DowntownCabCoLogoGTAV.webp",
   }
 
-  constructor(private toastController : ToastController, private router : Router, private conexionBD : DbservicioService) {
+  constructor(private servicioApi: ApiService,private toastController : ToastController, private router : Router, private conexionBD : DbservicioService) {
 
   }
 
@@ -45,5 +58,25 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
+
+    this.servicioApi.getUsers().subscribe((res)=>{
+      this.usuarios = res;
+      //console.log(res)
+      for(let x of this.usuarios){
+        this.conexionBD.registrarUsuario(x.id, x.nombre,x.clave);
+      }
+     
+    });
+
+    this.servicioApi.getAutos().subscribe((res)=>{
+      this.autos = res;
+      //console.log(res)
+      for(let x of this.autos){
+        this.conexionBD.registrarAuto(x.patente, x.marca,x.id_usuario);
+      }
+    this.conexionBD.inserttablas();
+    });
+    
+
   }
 }
