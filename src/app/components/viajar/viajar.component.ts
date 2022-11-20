@@ -48,7 +48,12 @@ export class ViajarComponent implements OnInit {
           }
         }
         //RESTAR PASAJERO RESTA UN PASAJERO (CREO)
-        this.conexion.restarPasajero(this.listaViajes[idViaje].idViaje);
+        if (this.listaViajes[idViaje].pasajeros > 0 ){
+          this.conexion.restarPasajero(this.listaViajes[idViaje].idViaje);
+        }else{
+          this.conexion.falseviaje(this.listaViajes[idViaje].idViaje);
+        }
+        
         //AGREGAR PASAJERO ES AGREGAR EL VIAJE A LA TABLA USARIO VIAJE
         this.conexion.agregarPasajero(this.listaViajes[idViaje].idViaje, precio);
         this.mensaje('Viaje reservado');
