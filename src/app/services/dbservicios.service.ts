@@ -516,7 +516,7 @@ export class DbservicioService implements OnInit {
 
   restarPasajero(idViaje){
     let data =[idViaje];
-    this.database.executeSql('UPDATE TABLE viaje SET pasajeros = pasajeros-1 WHERE idViaje = ?; ', data).then((res)=>{
+    this.database.executeSql('UPDATE TABLE viaje SET pasajeros = pasajeros-1 WHERE id_viaje = ?; ', data).then((res)=>{
       console.log('SE ELIMINÓ UN PASAJERO')
     }).catch(e => {
       console.log('NO SE ELIMINÓ UN PASAJERO');
