@@ -39,13 +39,17 @@ export class ViajarComponent implements OnInit {
       console.log('CODIGO: '+mensaje);
       if (this.viajeActual.length > 0) {
         this.mensaje('Ya tienes un viaje activo, cancelalo para tomar este.');
-      } else {
+      } 
+      else {
         let precio = this.listaViajes[idViaje].costo;
         for (var i = 0; i < this.listaDescuentos.length; i++){
           if (data == this.listaDescuentos[i].codigo){
             precio = precio - (precio * this.listaDescuentos[i].descuento); 
           }
         }
+        //RESTAR PASAJERO RESTA UN PASAJERO (CREO)
+        this.conexion.restarPasajero(this.listaViajes[idViaje].idViaje);
+        //AGREGAR PASAJERO ES AGREGAR EL VIAJE A LA TABLA USARIO VIAJE
         this.conexion.agregarPasajero(this.listaViajes[idViaje].idViaje, precio);
         this.mensaje('Viaje reservado');
       }

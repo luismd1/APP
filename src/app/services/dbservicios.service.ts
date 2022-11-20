@@ -514,6 +514,15 @@ export class DbservicioService implements OnInit {
     });
   }
 
+  restarPasajero(idViaje){
+    let data =[idViaje];
+    this.database.executeSql('UPDATE TABLE viaje SET pasajeros = pasajeros-1 WHERE idViaje = ?; ', data).then((res)=>{
+      console.log('SE ELIMINÓ UN PASAJERO')
+    }).catch(e => {
+      console.log('NO SE ELIMINÓ UN PASAJERO');
+    });
+  }
+
   verRol() {
     this.database.executeSql('SELECT rol FROM usuarioviaje WHERE fk_id_usuario = ? AND fk_id_viaje= ?;', [this.usuarioActual.value[0].idUsuario, this.viajeActual.value[0].idViaje]).then((res) => {
       for (var i = 0; i < res.rows.length; i++) {

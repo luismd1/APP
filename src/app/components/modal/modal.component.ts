@@ -19,6 +19,7 @@ export class ModalComponent implements OnInit {
   }
 
   confirm() {
+
     return this.modalCtrl.dismiss(this.codigo, 'confirm');
   }
 
