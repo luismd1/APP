@@ -24,6 +24,7 @@ export class VivoPage implements OnInit {
   cancelar(){
     this.conexionBD.verRol();
     this.conexionBD.cancelarViaje();
+    this.sumapasaj()
   }
 
   verActual(){
@@ -46,7 +47,7 @@ export class VivoPage implements OnInit {
 
   sumapasaj(){
 
-    this.conexionBD.sumarPasajero(this.viajeActual.idViaje);
+    this.conexionBD.sumarPasajero(this.viajeActual[0].idViaje);
     console.log('funcion desde vivo :)')
   }
 
