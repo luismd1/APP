@@ -43,6 +43,13 @@ export class VivoPage implements OnInit {
     toast.present();
   }
 
+
+  sumapasaj(){
+
+    this.conexionBD.sumarPasajero(this.viajeActual.idViaje);
+    console.log('funcion desde vivo :)')
+  }
+
   ngOnInit() {
     this.conexionBD.fetchViajeActual().subscribe(item => {
       if(item){

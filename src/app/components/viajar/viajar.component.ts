@@ -59,9 +59,7 @@ export class ViajarComponent implements OnInit {
         this.mensaje('Viaje reservado');
       }
     }
-    else{
-      this.conexion.sumarPasajero(this.listaViajes[idViaje].idViaje);
-    }
+
   }
 
   async mensaje(texto) {
