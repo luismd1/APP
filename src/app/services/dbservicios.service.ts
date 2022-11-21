@@ -523,12 +523,21 @@ export class DbservicioService implements OnInit {
     });
   }
 
+  sumarPasajero(idViaje){
+    let data =[idViaje,idViaje];
+    this.database.executeSql('UPDATE viaje SET pasajeros = (SELECT pasajeros+11 FROM viaje WHERE id_viaje = ?) WHERE id_viaje = ?; ', data).then((res)=>{
+      console.log('SE SUMÓ UN PASAJERO')
+    }).catch(e => {
+      console.log('NO SE SUMÓ UN PASAJERO');
+    });
+  }
+
   falseviaje(idViaje){
     let data =[idViaje];
     this.database.executeSql('UPDATE TABLE viaje SET estado = false WHERE idViaje = ?; ', data).then((res)=>{
-      console.log('SE PUSO EN FALSE UN PASAJERO')
+      console.log('SE PUSO EN FALSE UN VIAJE')
     }).catch(e => {
-      console.log('NO PUSO EN FALSE UN PASAJERO');
+      console.log('NO PUSO EN FALSE UN VIAJE');
     });
   }
   verRol() {
