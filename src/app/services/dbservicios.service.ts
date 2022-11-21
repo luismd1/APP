@@ -534,7 +534,7 @@ export class DbservicioService implements OnInit {
 
   falseviaje(idViaje){
     let data =[idViaje];
-    this.database.executeSql('UPDATE TABLE viaje SET estado = false WHERE idViaje = ?; ', data).then((res)=>{
+    this.database.executeSql('UPDATE viaje SET estado = false WHERE idViaje = ?; ', data).then((res)=>{
       console.log('SE PUSO EN FALSE UN VIAJE')
     }).catch(e => {
       console.log('NO PUSO EN FALSE UN VIAJE');
